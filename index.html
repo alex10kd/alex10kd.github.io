@@ -1,7 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animated Placeholder</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #111;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .container {
+      display: flex;
+      gap: 10px;
+    }
+
+    .digit {
+      width: 40px;
+      height: 40px;
+      background-color: #333;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      border-radius: 5px;
+      animation: rotateDigits 1s linear infinite;
+    }
+
+    /* Define the animation */
+    @keyframes rotateDigits {
+      0% { content: '1'; }
+      25% { content: '2'; }
+      50% { content: '3'; }
+      75% { content: '4'; }
+      100% { content: '5'; }
+    }
+
+    /* This CSS rule overrides text inside the .digit */
+    .digit::before {
+      content: counter(step);
+      counter-increment: step 1;
+    }
+
+    /* Set up a counter to rotate numbers */
+    body {
+      counter-reset: step 1;
+    }
+  </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+
+  <div class="container">
+    <div class="digit"></div>
+    <div class="digit"></div>
+    <div class="digit"></div>
+    <div class="digit"></div>
+    <div class="digit"></div>
+  </div>
+
 </body>
 </html>
