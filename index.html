@@ -70,9 +70,9 @@
   <canvas id="canvas"></canvas>
 
   <!-- Include Three.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
   <!-- Include OrbitControls -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://unpkg.com/three@0.155.0/examples/js/controls/OrbitControls.js"></script>
   <!-- Main Script -->
   <script>
     // Wait for the window to load
@@ -100,7 +100,7 @@
       scene.add(directionalLight);
 
       // Controls
-      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      const controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
 
       // Parametric Building Geometry
@@ -115,8 +115,12 @@
         const angle = i * 0.1;
         const floorHeight = i * heightPerFloor;
 
-        const geometry = new THREE.CylinderGeometry(radius, radius, heightPerFloor, 32, 1, false);
-        const material = new THREE.MeshStandardMaterial({ color: new THREE.Color(`hsl(${i * 10}, 80%, 50%)`), metalness: 0.5, roughness: 0.1 });
+        const geometry = new THREE.CylinderGeometry(radius, radius, heightPerFloor, 32);
+        const material = new THREE.MeshStandardMaterial({
+          color: new THREE.Color(`hsl(${i * 10}, 80%, 50%)`),
+          metalness: 0.5,
+          roughness: 0.1
+        });
         const floor = new THREE.Mesh(geometry, material);
         floor.position.y = floorHeight;
         floor.rotation.y = angle;
