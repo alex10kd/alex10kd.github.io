@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Three.js Interactive Slab Grid</title>
+    <title>Three.js Animated Slab Grid Without Interaction</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
@@ -47,10 +47,6 @@
         directionalLight.position.set(100, 100, 100);
         directionalLight.castShadow = true;
         scene.add(directionalLight);
-
-        // Raycaster for mouse interactions
-        var raycaster = new THREE.Raycaster();
-        var mouse = new THREE.Vector2();
 
         // Create a grid of boxes with slabs
         var gridSize = 3;
@@ -161,91 +157,6 @@
         }
 
         animate();
-
-        // Mouse events
-        window.addEventListener('mousemove', onMouseMove, false);
-        window.addEventListener('click', onMouseClick, false);
-
-        function onMouseMove(event) {
-            event.preventDefault();
-
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-
-            var intersects = raycaster.intersectObjects(scene.children, true);
-
-            if (intersects.length > 0) {
-                var intersectedObject = intersects[0].object;
-                var intersectedGroup = intersectedObject.parent;
-
-                // Traverse up to find the group with userData
-                while (intersectedGroup && !intersectedGroup.userData.label) {
-                    intersectedGroup = intersectedGroup.parent;
-                }
-
-                if (intersectedGroup && intersectedGroup.userData.label) {
-                    boxes.forEach(function(group) {
-                        if (group === intersectedGroup) {
-                            group.userData.animating = false;
-                            showLabel(event.clientX, event.clientY, group.userData.label);
-                        } else {
-                            group.userData.animating = true;
-                        }
-                    });
-                }
-            } else {
-                boxes.forEach(function(group) {
-                    group.userData.animating = true;
-                });
-                hideLabel();
-            }
-        }
-
-        function onMouseClick(event) {
-            event.preventDefault();
-
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-
-            var intersects = raycaster.intersectObjects(scene.children, true);
-
-            if (intersects.length > 0) {
-                var intersectedObject = intersects[0].object;
-                var intersectedGroup = intersectedObject.parent;
-
-                // Traverse up to find the group with userData
-                while (intersectedGroup && !intersectedGroup.userData.label) {
-                    intersectedGroup = intersectedGroup.parent;
-                }
-
-                if (intersectedGroup && intersectedGroup.userData.label) {
-                    var sectionName = intersectedGroup.userData.label;
-
-                    // Handle navigation to the section
-                    alert("Navigating to " + sectionName);
-                    // Replace the alert with actual navigation logic
-                    // For example: window.location.href = 'your-url-here';
-                }
-            }
-        }
-
-        // Label display
-        var labelDiv = document.getElementById('label');
-
-        function showLabel(x, y, text) {
-            labelDiv.style.left = x + 'px';
-            labelDiv.style.top = y - 30 + 'px';
-            labelDiv.textContent = text;
-            labelDiv.style.display = 'block';
-        }
-
-        function hideLabel() {
-            labelDiv.style.display = 'none';
-        }
 
         // Handle window resize
         window.addEventListener('resize', function() {
