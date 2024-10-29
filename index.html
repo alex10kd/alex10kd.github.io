@@ -228,7 +228,7 @@
             camera.updateProjectionMatrix();
         });
 
-        // Handle mouse movement for hover interaction
+         // Handle mouse movement for hover interaction
         window.addEventListener('mousemove', function(event) {
             document.body.style.cursor = 'default';
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -246,9 +246,13 @@
                 labelElement.innerHTML = intersectedGroup.userData.label;
 
                 boxes.forEach(function(group) {
+                if (group !== intersectedGroup) {
+                    group.userData.animating = true;
+                } else {
                     group.userData.animating = false;
+                }
                 });
-                cameraRotating = false;
+                cameraRotating = true;
             } else {
                 labelElement.style.display = 'none';
                 boxes.forEach(function(group) {
