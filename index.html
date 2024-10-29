@@ -2,217 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dynamic Grid with Three.js</title>
+    <title>Three.js Basic Example</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
-        #label {
-            position: absolute;
-            color: white;
-            font-size: 24px;
-            pointer-events: none;
-            display: none;
-        }
     </style>
 </head>
 <body>
-    <div id="label"></div>
-    <!-- Use type="module" to enable ES6 imports -->
-    <script type="module">
-        // Import Three.js and OrbitControls
-        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
-        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/controls/OrbitControls.js';
-
+    <!-- Include Three.js library from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+    <script>
         // Basic setup
-        const scene = new THREE.Scene();
+        var scene = new THREE.Scene();
         scene.background = new THREE.Color(0x202020);
 
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        camera.position.set(100, 100, 100);
-        camera.lookAt(0, 0, 0);
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        var renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // OrbitControls for camera movement
-        const controls = new OrbitControls(camera, renderer.domElement);
-
-        // Raycaster for mouse interactions
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-
-        // Create boxes
-        const boxes = [];
-        const labels = [
-            "About Me", "Projects", "Contact",
-            "Blog", "Gallery", "Services",
-            "Testimonials", "FAQ", "Careers"
-        ];
-
-        const boxGroup = new THREE.Group();
-
-        const boxSize = 40;
-        const spacing = 40;
-        const minHeight = 15;
-        const maxHeight = 50;
-
-        for (let i = 0; i < 9; i++) {
-            const box = createBox(i);
-            boxes.push(box);
-            boxGroup.add(box);
-        }
-
-        scene.add(boxGroup);
-
-        function createBox(index) {
-            const group = new THREE.Group();
-            group.name = "Box" + index;
-
-            const initialHeight = THREE.MathUtils.randFloat(minHeight, maxHeight);
-            group.userData = {
-                height: initialHeight,
-                targetHeight: initialHeight,
-                animating: true,
-                label: labels[index] || "Section " + (index + 1)
-            };
-
-            // Positioning in grid
-            const row = Math.floor(index / 3);
-            const col = index % 3;
-
-            group.position.x = (col - 1) * (boxSize + spacing);
-            group.position.z = (row - 1) * (boxSize + spacing);
-
-            // Create the slabs
-            updateSlabs(group);
-
-            return group;
-        }
-
-        function updateSlabs(boxGroup) {
-            // Remove existing slabs
-            while (boxGroup.children.length > 0) {
-                const child = boxGroup.children.pop();
-                child.geometry.dispose();
-                child.material.dispose();
-            }
-
-            const height = boxGroup.userData.height;
-            const numSlabs = Math.floor(height / 3);
-
-            const geometry = new THREE.PlaneGeometry(boxSize, boxSize);
-            const material = new THREE.MeshBasicMaterial({
-                color: 0x00ff00,
-                side: THREE.DoubleSide
-            });
-
-            for (let i = 0; i < numSlabs; i++) {
-                const slab = new THREE.Mesh(geometry, material);
-                slab.rotation.x = -Math.PI / 2;
-                slab.position.y = (i + 1) * 3;
-                boxGroup.add(slab);
-            }
-        }
+        // Create a cube
+        var geometry = new THREE.BoxGeometry();
+        var material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+        var cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
 
         // Animation loop
         function animate() {
             requestAnimationFrame(animate);
 
-            boxes.forEach(boxGroup => {
-                if (boxGroup.userData.animating) {
-                    // Randomly adjust target height
-                    if (Math.random() < 0.01) {
-                        boxGroup.userData.targetHeight = THREE.MathUtils.randFloat(minHeight, maxHeight);
-                    }
-
-                    // Smoothly animate height towards targetHeight
-                    const delta = (boxGroup.userData.targetHeight - boxGroup.userData.height) * 0.02;
-                    boxGroup.userData.height += delta;
-
-                    updateSlabs(boxGroup);
-                }
-            });
+            // Rotate the cube
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
 
             renderer.render(scene, camera);
         }
 
         animate();
 
-        // Mouse events
-        window.addEventListener('mousemove', onMouseMove, false);
-        window.addEventListener('click', onMouseClick, false);
-
-        function onMouseMove(event) {
-            event.preventDefault();
-
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-
-            const intersects = raycaster.intersectObjects(boxGroup.children, true);
-
-            if (intersects.length > 0) {
-                const intersectedBox = intersects[0].object.parent;
-
-                boxes.forEach(box => {
-                    if (box === intersectedBox) {
-                        box.userData.animating = false;
-                        showLabel(event.clientX, event.clientY, box.userData.label);
-                    } else {
-                        box.userData.animating = true;
-                    }
-                });
-            } else {
-                boxes.forEach(box => box.userData.animating = true);
-                hideLabel();
-            }
-        }
-
-        function onMouseClick(event) {
-            event.preventDefault();
-
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-
-            const intersects = raycaster.intersectObjects(boxGroup.children, true);
-
-            if (intersects.length > 0) {
-                const intersectedBox = intersects[0].object.parent;
-                const sectionName = intersectedBox.userData.label;
-
-                // Handle navigation to the section
-                alert("Navigating to " + sectionName);
-                // Replace the alert with actual navigation logic
-                // For example: window.location.href = 'your-url-here';
-            }
-        }
-
-        // Label display
-        const labelDiv = document.getElementById('label');
-
-        function showLabel(x, y, text) {
-            labelDiv.style.left = x + 'px';
-            labelDiv.style.top = y - 30 + 'px';
-            labelDiv.textContent = text;
-            labelDiv.style.display = 'block';
-        }
-
-        function hideLabel() {
-            labelDiv.style.display = 'none';
-        }
-
         // Handle window resize
-        window.addEventListener('resize', onWindowResize, false);
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
+        window.addEventListener('resize', function() {
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
+        });
     </script>
 </body>
 </html>
