@@ -92,7 +92,7 @@
             var height = group.userData.height;
             var numSlabs = Math.floor(height / 3);
 
-            var geometry = new THREE.PlaneGeometry(boxSize, boxSize);
+            var geometry = new THREE.PlaneGeometry(boxSize, boxSize, 1, 1);
             var material = new THREE.MeshStandardMaterial({ color: color, side: THREE.DoubleSide, metalness: 0.3, roughness: 0.6 });
 
             for (var k = 0; k < numSlabs; k++) {
