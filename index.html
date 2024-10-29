@@ -41,6 +41,7 @@
         directionalLight.shadow.camera.right = 150;
         directionalLight.shadow.camera.top = 150;
         directionalLight.shadow.camera.bottom = -150;
+        directionalLight.shadow.bias = -0.0005; // Adjusted bias to avoid shadow acne
         scene.add(directionalLight);
 
         // Create a grid of boxes with slabs
@@ -91,8 +92,8 @@
             var height = group.userData.height;
             var numSlabs = Math.floor(height / 5); // Adjusted to reduce number of slabs and overlap
 
-            var geometry = new THREE.PlaneGeometry(boxSize, boxSize);
-            var material = new THREE.MeshStandardMaterial({ color: color, side: THREE.DoubleSide, metalness: 0.3, roughness: 0 });
+            var geometry = new THREE.PlaneGeometry(boxSize, boxSize, 1, 1); // Set segments to 1,1 to reduce mesh lines
+            var material = new THREE.MeshStandardMaterial({ color: color, side: THREE.DoubleSide, metalness: 0.2, roughness: 0.8 });
 
             for (var k = 0; k < numSlabs; k++) {
                 var slab = new THREE.Mesh(geometry, material);
