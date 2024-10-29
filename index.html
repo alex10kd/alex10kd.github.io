@@ -2,13 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Three.js Animated Slab Grid with Enhanced Lighting and Materials</title>
+    <title>Three.js Animated Slab Grid with Interactive Hover</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
+        #label {
+            position: absolute;
+            color: white;
+            font-size: 20px;
+            pointer-events: none;
+            display: none;
+            text-shadow: 1px 1px 2px black;
+        }
     </style>
 </head>
 <body>
+    <div id="label"></div>
     <!-- Include Three.js library from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
     <script>
@@ -16,8 +25,8 @@
         var scene = new THREE.Scene();
         scene.background = new THREE.Color(0x202020);
 
-        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        camera.position.set(150, 150, 150);
+        var camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 1000);
+        camera.position.set(200, 150, 150);
         camera.lookAt(0, 0, 0);
 
         var renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -27,10 +36,10 @@
         document.body.appendChild(renderer.domElement);
 
         // Add lights for shading
-        var ambientLight = new THREE.AmbientLight(0xaaaaaa, 0.3); // Soft ambient light with a slight warm tint
+        var ambientLight = new THREE.AmbientLight(0xaaaaaa, 0.8); // Soft ambient light with a slight warm tint
         scene.add(ambientLight);
 
-        var directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
         directionalLight.position.set(150, 200, 100);
         directionalLight.castShadow = true;
         directionalLight.shadow.mapSize.width = 2048;
@@ -41,7 +50,7 @@
         directionalLight.shadow.camera.right = 150;
         directionalLight.shadow.camera.top = 150;
         directionalLight.shadow.camera.bottom = -150;
-        directionalLight.shadow.bias = -0.0004; // Adjusted bias to avoid shadow acne
+        directionalLight.shadow.bias = -0.0005; // Adjusted bias to avoid shadow acne
         scene.add(directionalLight);
 
         // Create a grid of boxes with slabs
@@ -64,30 +73,46 @@
             0xF0A202  // Gold
         ];
 
+        var labels = [
+            "About Me", "Projects", "Contact", "Blog", "Gallery", "Services", "Testimonials", "FAQ", "Careers"
+        ];
+
+        var links = [
+            "https://example.com/about", "https://example.com/projects", "https://example.com/contact", "https://example.com/blog", "https://example.com/gallery", "https://example.com/services", "https://example.com/testimonials", "https://example.com/faq", "https://example.com/careers"
+        ];
+
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
+        var labelElement = document.getElementById('label');
+
         function createBox(i, j, index) {
             var group = new THREE.Group();
             group.userData = {
                 height: Math.random() * (maxHeight - minHeight) + minHeight,
                 targetHeight: Math.random() * (maxHeight - minHeight) + minHeight,
-                animating: true
+                animating: true,
+                label: labels[index],
+                link: links[index]
             };
 
             group.position.x = (i - 1) * (boxSize + spacing);
             group.position.z = (j - 1) * (boxSize + spacing);
 
             updateSlabs(group, colors[index]);
+            updateColumns(group, colors[index]);
 
             scene.add(group);
             boxes.push(group);
         }
 
         function updateSlabs(group, color) {
-            // Remove existing slabs
-            while (group.children.length > 0) {
-                var child = group.children.pop();
+            // Remove existing slabs, keeping columns
+            var slabs = group.children.filter(child => child.geometry.type === 'PlaneGeometry');
+            slabs.forEach(function(child) {
+                group.remove(child);
                 child.geometry.dispose();
                 child.material.dispose();
-            }
+            });
 
             var height = group.userData.height;
             var numSlabs = Math.floor(height / 5); // Adjusted to reduce number of slabs and overlap
@@ -112,6 +137,43 @@
             }
         }
 
+        function updateColumns(group, color) {
+            // Remove existing columns
+            var columns = group.children.filter(child => child.geometry.type === 'BoxGeometry');
+            columns.forEach(function(child) {
+                group.remove(child);
+                child.geometry.dispose();
+                child.material.dispose();
+            });
+
+            var height = group.userData.height;
+            var columnSpacing = 10;
+            var numSlabs = Math.floor(height / 5); // Ensure columns match the number of slabs
+            var columnHeight = (numSlabs) * 5.5; // Columns should reach the last slab
+            var columnGeometry = new THREE.BoxGeometry(1.5, columnHeight, 1.5);
+            var columnMaterial = new THREE.MeshPhysicalMaterial({
+                color: color,
+                side: THREE.DoubleSide,
+                metalness: 0.1,
+                roughness: 0.9,
+                clearcoat: 0.1,
+                clearcoatRoughness: 0.8
+            });
+
+            // Position columns at intervals along the edges
+            for (var x = -boxSize / 2; x <= boxSize / 2; x += columnSpacing) {
+                for (var z = -boxSize / 2; z <= boxSize / 2; z += columnSpacing) {
+                    if (Math.abs(x) === boxSize / 2 || Math.abs(z) === boxSize / 2) {
+                        var column = new THREE.Mesh(columnGeometry, columnMaterial);
+                        column.position.set(x, columnHeight / 2, z);
+                        column.castShadow = true;
+                        column.receiveShadow = true;
+                        group.add(column);
+                    }
+                }
+            }
+        }
+
         var index = 0;
         for (var i = 0; i < gridSize; i++) {
             for (var j = 0; j < gridSize; j++) {
@@ -119,6 +181,10 @@
                 index++;
             }
         }
+
+        // Smooth camera rotation parameters
+        var angle = 0;
+        var cameraRotating = true;
 
         // Animation loop
         function animate() {
@@ -136,8 +202,17 @@
                     group.userData.height += delta;
 
                     updateSlabs(group, colors[boxes.indexOf(group)]);
+                    updateColumns(group, colors[boxes.indexOf(group)]);
                 }
             });
+
+            // Smoothly rotate the camera around the scene if not paused
+            if (cameraRotating) {
+                angle += 0.0005;
+                camera.position.x = 150 * Math.cos(angle);
+                camera.position.z = 150 * Math.sin(angle);
+                camera.lookAt(0, 0, 0);
+            }
 
             renderer.render(scene, camera);
         }
@@ -151,6 +226,47 @@
             renderer.setSize(width, height);
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
+        });
+
+        // Handle mouse movement for hover interaction
+        window.addEventListener('mousemove', function(event) {
+            document.body.style.cursor = 'default';
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            var intersects = raycaster.intersectObjects(boxes, true);
+
+            if (intersects.length > 0) {
+                var intersectedGroup = intersects[0].object.parent;
+                document.body.style.cursor = 'pointer';
+                labelElement.style.display = 'block';
+                labelElement.style.left = (event.clientX + 10) + 'px';
+                labelElement.style.top = (event.clientY + 10) + 'px';
+                labelElement.innerHTML = intersectedGroup.userData.label;
+
+                boxes.forEach(function(group) {
+                    group.userData.animating = false;
+                });
+                cameraRotating = false;
+            } else {
+                labelElement.style.display = 'none';
+                boxes.forEach(function(group) {
+                    group.userData.animating = true;
+                });
+                cameraRotating = true;
+            }
+        });
+
+        // Handle mouse click for hyperlink navigation
+        window.addEventListener('click', function(event) {
+            raycaster.setFromCamera(mouse, camera);
+            var intersects = raycaster.intersectObjects(boxes, true);
+
+            if (intersects.length > 0) {
+                var intersectedGroup = intersects[0].object.parent;
+                window.open(intersectedGroup.userData.link, '_blank');
+            }
         });
     </script>
 </body>
