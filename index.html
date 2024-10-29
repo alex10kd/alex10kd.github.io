@@ -2,26 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Three.js Animated Slab Grid Without Interaction</title>
+    <title>Three.js Animated Slab Grid Simplified</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
-        #label {
-            position: absolute;
-            color: white;
-            font-size: 24px;
-            pointer-events: none;
-            display: none;
-            text-shadow: 1px 1px 2px black;
-        }
     </style>
 </head>
 <body>
-    <div id="label"></div>
     <!-- Include Three.js library from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-    <!-- Include OrbitControls (optional) -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
     <script>
         // Basic setup
         var scene = new THREE.Scene();
@@ -33,20 +22,7 @@
 
         var renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
-
-        // OrbitControls for camera movement
-        var controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-        // Add lights
-        var ambientLight = new THREE.AmbientLight(0x404040); // soft white light
-        scene.add(ambientLight);
-
-        var directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(100, 100, 100);
-        directionalLight.castShadow = true;
-        scene.add(directionalLight);
 
         // Create a grid of boxes with slabs
         var gridSize = 3;
@@ -55,15 +31,7 @@
         var boxes = [];
         var minHeight = 15;
         var maxHeight = 50;
-        var maxSlabs = Math.ceil(maxHeight / 3);
 
-        var labels = [
-            "About Me", "Projects", "Contact",
-            "Blog", "Gallery", "Services",
-            "Testimonials", "FAQ", "Careers"
-        ];
-
-        // Classy color palette
         var colors = [
             0xD7263D, // Crimson
             0x02182B, // Dark Blue
@@ -81,48 +49,37 @@
             group.userData = {
                 height: Math.random() * (maxHeight - minHeight) + minHeight,
                 targetHeight: Math.random() * (maxHeight - minHeight) + minHeight,
-                animating: true,
-                label: labels[index],
-                slabs: []
+                animating: true
             };
 
             group.position.x = (i - 1) * (boxSize + spacing);
             group.position.z = (j - 1) * (boxSize + spacing);
 
-            // Create slabs
-            var geometry = new THREE.PlaneGeometry(boxSize, boxSize);
-            var material = new THREE.MeshPhongMaterial({
-                color: colors[index],
-                side: THREE.DoubleSide,
-                shininess: 50
-            });
-
-            for (var k = 0; k < maxSlabs; k++) {
-                var slab = new THREE.Mesh(geometry, material);
-                slab.rotation.x = -Math.PI / 2;
-                slab.position.y = (k + 1) * 3;
-                slab.receiveShadow = true;
-                slab.castShadow = true;
-                group.add(slab);
-                group.userData.slabs.push(slab);
-            }
-
-            updateSlabsVisibility(group);
+            updateSlabs(group, colors[index]);
 
             scene.add(group);
             boxes.push(group);
         }
 
-        function updateSlabsVisibility(group) {
+        function updateSlabs(group, color) {
+            // Remove existing slabs
+            while (group.children.length > 0) {
+                var child = group.children.pop();
+                child.geometry.dispose();
+                child.material.dispose();
+            }
+
             var height = group.userData.height;
             var numSlabs = Math.floor(height / 3);
 
-            for (var i = 0; i < group.userData.slabs.length; i++) {
-                if (i < numSlabs) {
-                    group.userData.slabs[i].visible = true;
-                } else {
-                    group.userData.slabs[i].visible = false;
-                }
+            var geometry = new THREE.PlaneGeometry(boxSize, boxSize);
+            var material = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide });
+
+            for (var k = 0; k < numSlabs; k++) {
+                var slab = new THREE.Mesh(geometry, material);
+                slab.rotation.x = -Math.PI / 2;
+                slab.position.y = (k + 1) * 3;
+                group.add(slab);
             }
         }
 
@@ -138,7 +95,7 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            boxes.forEach(function(group, idx) {
+            boxes.forEach(function(group) {
                 if (group.userData.animating) {
                     // Randomly adjust target height
                     if (Math.random() < 0.01) {
@@ -149,7 +106,7 @@
                     var delta = (group.userData.targetHeight - group.userData.height) * 0.02;
                     group.userData.height += delta;
 
-                    updateSlabsVisibility(group);
+                    updateSlabs(group, colors[boxes.indexOf(group)]);
                 }
             });
 
