@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Three.js Animated Slab Grid with Improved Shading</title>
+    <title>Three.js Animated Slab Grid with Enhanced Shadows and Lighting</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
@@ -27,17 +27,30 @@
         document.body.appendChild(renderer.domElement);
 
         // Add lights for shading
-        var ambientLight = new THREE.AmbientLight(0x404040, 1.5); // Soft ambient light
+        var ambientLight = new THREE.AmbientLight(0x404040, 1.2); // Soft ambient light
         scene.add(ambientLight);
 
-        var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(100, 100, 100);
-        directionalLight.castShadow = true;
-        directionalLight.shadow.mapSize.width = 1024;
-        directionalLight.shadow.mapSize.height = 1024;
-        directionalLight.shadow.camera.near = 0.5;
-        directionalLight.shadow.camera.far = 500;
-        scene.add(directionalLight);
+        var directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight1.position.set(100, 100, 100);
+        directionalLight1.castShadow = true;
+        directionalLight1.shadow.mapSize.width = 2048;
+        directionalLight1.shadow.mapSize.height = 2048;
+        directionalLight1.shadow.camera.near = 0.5;
+        directionalLight1.shadow.camera.far = 500;
+        scene.add(directionalLight1);
+
+        var directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight2.position.set(-100, 100, -100);
+        scene.add(directionalLight2);
+
+        // Ground plane to receive shadows
+        var groundGeometry = new THREE.PlaneGeometry(300, 300);
+        var groundMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
+        var ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = 0;
+        ground.receiveShadow = true;
+        scene.add(ground);
 
         // Create a grid of boxes with slabs
         var gridSize = 3;
@@ -93,7 +106,7 @@
             for (var k = 0; k < numSlabs; k++) {
                 var slab = new THREE.Mesh(geometry, material);
                 slab.rotation.x = -Math.PI / 2;
-                slab.position.y = (k + 1) * 3.05; // Add slight spacing to avoid overlap artifacts
+                slab.position.y = (k + 1) * 3.1; // Add more spacing to avoid overlap artifacts
                 slab.receiveShadow = true;
                 slab.castShadow = true;
                 group.add(slab);
