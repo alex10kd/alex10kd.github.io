@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Three.js Animated Slab Grid with Enhanced Shadows and Lighting</title>
+    <title>Three.js Animated Slab Grid with Enhanced Lighting and Materials</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
@@ -27,35 +27,26 @@
         document.body.appendChild(renderer.domElement);
 
         // Add lights for shading
-        var ambientLight = new THREE.AmbientLight(0x404040, 1.2); // Soft ambient light
+        var ambientLight = new THREE.AmbientLight(0x404040, 1.5); // Soft ambient light
         scene.add(ambientLight);
 
-        var directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight1.position.set(100, 100, 100);
-        directionalLight1.castShadow = true;
-        directionalLight1.shadow.mapSize.width = 2048;
-        directionalLight1.shadow.mapSize.height = 2048;
-        directionalLight1.shadow.camera.near = 0.5;
-        directionalLight1.shadow.camera.far = 500;
-        scene.add(directionalLight1);
-
-        var directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight2.position.set(-100, 100, -100);
-        scene.add(directionalLight2);
-
-        // Ground plane to receive shadows
-        var groundGeometry = new THREE.PlaneGeometry(300, 300);
-        var groundMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
-        var ground = new THREE.Mesh(groundGeometry, groundMaterial);
-        ground.rotation.x = -Math.PI / 2;
-        ground.position.y = 0;
-        ground.receiveShadow = true;
-        scene.add(ground);
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        directionalLight.position.set(150, 200, 100);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        directionalLight.shadow.camera.near = 0.5;
+        directionalLight.shadow.camera.far = 500;
+        directionalLight.shadow.camera.left = -150;
+        directionalLight.shadow.camera.right = 150;
+        directionalLight.shadow.camera.top = 150;
+        directionalLight.shadow.camera.bottom = -150;
+        scene.add(directionalLight);
 
         // Create a grid of boxes with slabs
         var gridSize = 3;
         var boxSize = 40;
-        var spacing = 40;
+        var spacing = 50;
         var boxes = [];
         var minHeight = 15;
         var maxHeight = 50;
@@ -98,15 +89,15 @@
             }
 
             var height = group.userData.height;
-            var numSlabs = Math.floor(height / 3);
+            var numSlabs = Math.floor(height / 5); // Adjusted to reduce number of slabs and overlap
 
-            var geometry = new THREE.PlaneGeometry(boxSize, boxSize, 1, 1);
-            var material = new THREE.MeshLambertMaterial({ color: color, side: THREE.DoubleSide });
+            var geometry = new THREE.PlaneGeometry(boxSize, boxSize);
+            var material = new THREE.MeshStandardMaterial({ color: color, side: THREE.DoubleSide, metalness: 0.3, roughness: 0.7 });
 
             for (var k = 0; k < numSlabs; k++) {
                 var slab = new THREE.Mesh(geometry, material);
                 slab.rotation.x = -Math.PI / 2;
-                slab.position.y = (k + 1) * 3.1; // Add more spacing to avoid overlap artifacts
+                slab.position.y = (k + 1) * 5.5; // Increased spacing to completely avoid overlap
                 slab.receiveShadow = true;
                 slab.castShadow = true;
                 group.add(slab);
