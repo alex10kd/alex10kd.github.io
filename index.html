@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Three.js Animated Slab Grid Simplified</title>
+    <title>Three.js Animated Slab Grid with Shading</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
@@ -22,7 +22,17 @@
 
         var renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
+
+        // Add lights for shading
+        var ambientLight = new THREE.AmbientLight(0x404040, 0.8); // Soft ambient light
+        scene.add(ambientLight);
+
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(100, 100, 100);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
 
         // Create a grid of boxes with slabs
         var gridSize = 3;
@@ -73,12 +83,14 @@
             var numSlabs = Math.floor(height / 3);
 
             var geometry = new THREE.PlaneGeometry(boxSize, boxSize);
-            var material = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide });
+            var material = new THREE.MeshPhongMaterial({ color: color, side: THREE.DoubleSide, shininess: 50 });
 
             for (var k = 0; k < numSlabs; k++) {
                 var slab = new THREE.Mesh(geometry, material);
                 slab.rotation.x = -Math.PI / 2;
                 slab.position.y = (k + 1) * 3;
+                slab.receiveShadow = true;
+                slab.castShadow = true;
                 group.add(slab);
             }
         }
