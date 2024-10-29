@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Three.js Basic Example</title>
+    <title>Three.js Grid Example</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
@@ -16,26 +16,43 @@
         var scene = new THREE.Scene();
         scene.background = new THREE.Color(0x202020);
 
-        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        camera.position.z = 5;
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+        camera.position.set(100, 100, 100);
+        camera.lookAt(0, 0, 0);
 
         var renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Create a cube
-        var geometry = new THREE.BoxGeometry();
-        var material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-        var cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
+        // Create a grid of cubes
+        var gridSize = 3;
+        var boxSize = 40;
+        var spacing = 40;
+        var boxes = [];
+
+        for (var i = 0; i < gridSize; i++) {
+            for (var j = 0; j < gridSize; j++) {
+                var geometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
+                var material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+                var cube = new THREE.Mesh(geometry, material);
+
+                cube.position.x = (i - 1) * (boxSize + spacing);
+                cube.position.z = (j - 1) * (boxSize + spacing);
+
+                scene.add(cube);
+                boxes.push(cube);
+            }
+        }
 
         // Animation loop
         function animate() {
             requestAnimationFrame(animate);
 
-            // Rotate the cube
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
+            // Rotate all cubes
+            boxes.forEach(function(cube) {
+                cube.rotation.x += 0.01;
+                cube.rotation.y += 0.01;
+            });
 
             renderer.render(scene, camera);
         }
