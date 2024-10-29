@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Three.js Grid Example</title>
+    <title>Three.js Slab Grid Example</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
@@ -24,35 +24,42 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Create a grid of cubes
+        // Create a grid of boxes with slabs
         var gridSize = 3;
         var boxSize = 40;
         var spacing = 40;
         var boxes = [];
+        var minHeight = 15;
+        var maxHeight = 50;
 
         for (var i = 0; i < gridSize; i++) {
             for (var j = 0; j < gridSize; j++) {
-                var geometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
-                var material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-                var cube = new THREE.Mesh(geometry, material);
+                var group = new THREE.Group();
 
-                cube.position.x = (i - 1) * (boxSize + spacing);
-                cube.position.z = (j - 1) * (boxSize + spacing);
+                var height = Math.random() * (maxHeight - minHeight) + minHeight;
+                var numSlabs = Math.floor(height / 3);
 
-                scene.add(cube);
-                boxes.push(cube);
+                var geometry = new THREE.PlaneGeometry(boxSize, boxSize);
+                var material = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide });
+
+                for (var k = 0; k < numSlabs; k++) {
+                    var slab = new THREE.Mesh(geometry, material);
+                    slab.rotation.x = -Math.PI / 2;
+                    slab.position.y = (k + 1) * 3;
+                    group.add(slab);
+                }
+
+                group.position.x = (i - 1) * (boxSize + spacing);
+                group.position.z = (j - 1) * (boxSize + spacing);
+
+                scene.add(group);
+                boxes.push(group);
             }
         }
 
         // Animation loop
         function animate() {
             requestAnimationFrame(animate);
-
-            // Rotate all cubes
-            boxes.forEach(function(cube) {
-                cube.rotation.x += 0.01;
-                cube.rotation.y += 0.01;
-            });
 
             renderer.render(scene, camera);
         }
