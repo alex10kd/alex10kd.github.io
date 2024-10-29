@@ -27,10 +27,10 @@
         document.body.appendChild(renderer.domElement);
 
         // Add lights for shading
-        var ambientLight = new THREE.AmbientLight(0x404040, 1.5); // Soft ambient light
+        var ambientLight = new THREE.AmbientLight(0xaaaaaa, 0.8); // Soft ambient light with a slight warm tint
         scene.add(ambientLight);
 
-        var directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
         directionalLight.position.set(150, 200, 100);
         directionalLight.castShadow = true;
         directionalLight.shadow.mapSize.width = 2048;
@@ -93,7 +93,14 @@
             var numSlabs = Math.floor(height / 5); // Adjusted to reduce number of slabs and overlap
 
             var geometry = new THREE.PlaneGeometry(boxSize, boxSize, 1, 1); // Set segments to 1,1 to reduce mesh lines
-            var material = new THREE.MeshStandardMaterial({ color: color, side: THREE.DoubleSide, metalness: 0.2, roughness: 0.8 });
+            var material = new THREE.MeshPhysicalMaterial({
+                color: color,
+                side: THREE.DoubleSide,
+                metalness: 0.1,
+                roughness: 0.9,
+                clearcoat: 0.1, // Adds a subtle sheen for visual interest
+                clearcoatRoughness: 0.8
+            });
 
             for (var k = 0; k < numSlabs; k++) {
                 var slab = new THREE.Mesh(geometry, material);
