@@ -17,46 +17,48 @@
 </head>
 <body>
     <div id="label"></div>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-    <!-- Include OrbitControls for camera control (optional) -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
-    <script>
+    <!-- Use type="module" to enable ES6 imports -->
+    <script type="module">
+        // Import Three.js and OrbitControls
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
+        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/controls/OrbitControls.js';
+
         // Basic setup
-        let scene = new THREE.Scene();
+        const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x202020);
 
-        let camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
         camera.position.set(100, 100, 100);
         camera.lookAt(0, 0, 0);
 
-        let renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Optional: OrbitControls for camera movement
-        let controls = new THREE.OrbitControls(camera, renderer.domElement);
+        // OrbitControls for camera movement
+        const controls = new OrbitControls(camera, renderer.domElement);
 
         // Raycaster for mouse interactions
-        let raycaster = new THREE.Raycaster();
-        let mouse = new THREE.Vector2();
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
 
         // Create boxes
-        let boxes = [];
-        let labels = [
+        const boxes = [];
+        const labels = [
             "About Me", "Projects", "Contact",
             "Blog", "Gallery", "Services",
             "Testimonials", "FAQ", "Careers"
         ];
 
-        let boxGroup = new THREE.Group();
+        const boxGroup = new THREE.Group();
 
-        let boxSize = 40;
-        let spacing = 40;
-        let minHeight = 15;
-        let maxHeight = 50;
+        const boxSize = 40;
+        const spacing = 40;
+        const minHeight = 15;
+        const maxHeight = 50;
 
         for (let i = 0; i < 9; i++) {
-            let box = createBox(i);
+            const box = createBox(i);
             boxes.push(box);
             boxGroup.add(box);
         }
@@ -64,21 +66,20 @@
         scene.add(boxGroup);
 
         function createBox(index) {
-            let group = new THREE.Group();
+            const group = new THREE.Group();
             group.name = "Box" + index;
 
-            let initialHeight = THREE.MathUtils.randFloat(minHeight, maxHeight);
+            const initialHeight = THREE.MathUtils.randFloat(minHeight, maxHeight);
             group.userData = {
                 height: initialHeight,
                 targetHeight: initialHeight,
-                slabs: [],
                 animating: true,
                 label: labels[index] || "Section " + (index + 1)
             };
 
             // Positioning in grid
-            let row = Math.floor(index / 3);
-            let col = index % 3;
+            const row = Math.floor(index / 3);
+            const col = index % 3;
 
             group.position.x = (col - 1) * (boxSize + spacing);
             group.position.z = (row - 1) * (boxSize + spacing);
@@ -92,22 +93,22 @@
         function updateSlabs(boxGroup) {
             // Remove existing slabs
             while (boxGroup.children.length > 0) {
-                let child = boxGroup.children.pop();
+                const child = boxGroup.children.pop();
                 child.geometry.dispose();
                 child.material.dispose();
             }
 
-            let height = boxGroup.userData.height;
-            let numSlabs = Math.floor(height / 3);
+            const height = boxGroup.userData.height;
+            const numSlabs = Math.floor(height / 3);
 
-            let geometry = new THREE.PlaneGeometry(boxSize, boxSize);
-            let material = new THREE.MeshBasicMaterial({
+            const geometry = new THREE.PlaneGeometry(boxSize, boxSize);
+            const material = new THREE.MeshBasicMaterial({
                 color: 0x00ff00,
                 side: THREE.DoubleSide
             });
 
             for (let i = 0; i < numSlabs; i++) {
-                let slab = new THREE.Mesh(geometry, material);
+                const slab = new THREE.Mesh(geometry, material);
                 slab.rotation.x = -Math.PI / 2;
                 slab.position.y = (i + 1) * 3;
                 boxGroup.add(slab);
@@ -126,7 +127,7 @@
                     }
 
                     // Smoothly animate height towards targetHeight
-                    let delta = (boxGroup.userData.targetHeight - boxGroup.userData.height) * 0.02;
+                    const delta = (boxGroup.userData.targetHeight - boxGroup.userData.height) * 0.02;
                     boxGroup.userData.height += delta;
 
                     updateSlabs(boxGroup);
@@ -150,10 +151,10 @@
 
             raycaster.setFromCamera(mouse, camera);
 
-            let intersects = raycaster.intersectObjects(boxGroup.children, true);
+            const intersects = raycaster.intersectObjects(boxGroup.children, true);
 
             if (intersects.length > 0) {
-                let intersectedBox = intersects[0].object.parent;
+                const intersectedBox = intersects[0].object.parent;
 
                 boxes.forEach(box => {
                     if (box === intersectedBox) {
@@ -177,21 +178,21 @@
 
             raycaster.setFromCamera(mouse, camera);
 
-            let intersects = raycaster.intersectObjects(boxGroup.children, true);
+            const intersects = raycaster.intersectObjects(boxGroup.children, true);
 
             if (intersects.length > 0) {
-                let intersectedBox = intersects[0].object.parent;
-                let sectionName = intersectedBox.userData.label;
+                const intersectedBox = intersects[0].object.parent;
+                const sectionName = intersectedBox.userData.label;
 
                 // Handle navigation to the section
                 alert("Navigating to " + sectionName);
                 // Replace the alert with actual navigation logic
-                // For example: window.location.href = section URLs based on sectionName
+                // For example: window.location.href = 'your-url-here';
             }
         }
 
         // Label display
-        let labelDiv = document.getElementById('label');
+        const labelDiv = document.getElementById('label');
 
         function showLabel(x, y, text) {
             labelDiv.style.left = x + 'px';
