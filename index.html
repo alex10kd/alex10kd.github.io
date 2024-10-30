@@ -302,6 +302,27 @@
 				document.getElementById('services').style.display = 'none';
             }
         });
+		
+		// Add controls for mobile users
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            window.addEventListener('touchstart', function(event) {
+                raycaster.setFromCamera(mouse, camera);
+                var intersects = raycaster.intersectObjects(boxes, true);
+
+                if (intersects.length > 0) {
+                    var intersectedGroup = intersects[0].object.parent;
+                    if (intersectedGroup.userData.label === "About Me") {
+                        document.getElementById('about').style.display = 'block';
+                    } else if (intersectedGroup.userData.label === "Contact") {
+                        window.location.href = intersectedGroup.userData.link;
+                    } else {
+                        window.open(intersectedGroup.userData.link, '_blank');
+                    }
+                } else {
+                    document.getElementById('about').style.display = 'none';
+                }
+            });
+        }
     </script>
 </body>
 </html>
