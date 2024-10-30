@@ -306,6 +306,11 @@
 		// Add controls for mobile users
         if (/Mobi|Android/i.test(navigator.userAgent)) {
             window.addEventListener('touchstart', function(event) {
+                event.preventDefault();
+                var touch = event.touches[0];
+                mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+
                 raycaster.setFromCamera(mouse, camera);
                 var intersects = raycaster.intersectObjects(boxes, true);
 
@@ -322,6 +327,7 @@
                     document.getElementById('about').style.display = 'none';
                 }
             });
+        }
         }
     </script>
 </body>
