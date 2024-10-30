@@ -62,7 +62,7 @@
         scene.background = new THREE.Color(0x202020);
 
         var camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 1000);
-        camera.position.set(200, 150, 150);
+        camera.position.set(200, 220, 150);
         camera.lookAt(0, 0, 0);
 
         var renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -95,7 +95,7 @@
         var spacing = 50;
         var boxes = [];
         var minHeight = 15;
-        var maxHeight = 80;
+        var maxHeight = 150;
 
         var colors = [
             0xD7263D, // Crimson
@@ -267,69 +267,75 @@
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 			// Variables
-			let clickTime = 0;
+let clickTime = 0;
+let lastClickedObject = null;
 
-			// Handle pointer movement for hover interaction
-			window.addEventListener('pointermove', function(event) {
-				event.preventDefault();
-				mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-				mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+// Handle pointer movement for hover interaction
+window.addEventListener('pointermove', function(event) {
+    event.preventDefault();
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-				raycaster.setFromCamera(mouse, camera);
-				var intersects = raycaster.intersectObjects(boxes, true);
+    raycaster.setFromCamera(mouse, camera);
+    var intersects = raycaster.intersectObjects(boxes, true);
 
-				if (intersects.length > 0) {
-					var intersectedGroup = intersects[0].object.parent;
-					labelElement.style.display = 'block';
-					labelElement.style.left = (event.clientX + 10) + 'px';
-					labelElement.style.top = (event.clientY + 10) + 'px';
-					labelElement.innerHTML = intersectedGroup.userData.label;
-					document.body.style.cursor = 'pointer';
-				} else {
-					labelElement.style.display = 'none';
-					document.body.style.cursor = 'default';
-				}
-			}, { passive: false });
+    if (intersects.length > 0) {
+        var intersectedGroup = intersects[0].object.parent;
+        labelElement.style.display = 'block';
+        labelElement.style.left = (event.clientX + 10) + 'px';
+        labelElement.style.top = (event.clientY + 10) + 'px';
+        labelElement.innerHTML = intersectedGroup.userData.label;
+        document.body.style.cursor = 'pointer';
+    } else {
+        labelElement.style.display = 'none';
+        document.body.style.cursor = 'default';
+    }
+}, { passive: false });
 
-			// Handle click events for showing/hiding sections and opening hyperlinks
-			window.addEventListener('pointerup', function(event) {
-				event.preventDefault();
-				raycaster.setFromCamera(mouse, camera);
-				var intersects = raycaster.intersectObjects(boxes, true);
+// Handle click events for showing/hiding sections and opening hyperlinks
+window.addEventListener('pointerup', function(event) {
+    event.preventDefault();
+    raycaster.setFromCamera(mouse, camera);
+    var intersects = raycaster.intersectObjects(boxes, true);
 
-				if (intersects.length > 0) {
-					var intersectedGroup = intersects[0].object.parent;
+    if (intersects.length > 0) {
+        var intersectedGroup = intersects[0].object.parent;
 
-					if (Date.now() - clickTime < 300) {
-						// Double-click detected: open the hyperlink
-						if (intersectedGroup.userData.link) {
-							window.open(intersectedGroup.userData.link, '_blank');
-						}
-					} else {
-						// Single-click detected: show only the tag
-						clickTime = Date.now();
+        if (intersectedGroup === lastClickedObject && Date.now() - clickTime < 300) {
+            // Double-click detected on the same object: open the hyperlink
+            if (intersectedGroup.userData.link) {
+                window.open(intersectedGroup.userData.link, '_blank');
+            }
+            // Reset to avoid counting further clicks as double clicks automatically
+            lastClickedObject = null;
+        } else {
+            // Single-click detected: show only the tag
+            clickTime = Date.now();
+            lastClickedObject = intersectedGroup;
 
-						// Hide all sections first
-						document.getElementById('about').style.display = 'none';
-						document.getElementById('contact').style.display = 'none';
-						document.getElementById('services').style.display = 'none';
+            // Hide all sections first
+            document.getElementById('about').style.display = 'none';
+            document.getElementById('contact').style.display = 'none';
+            document.getElementById('services').style.display = 'none';
 
-						// Display the relevant section based on userData label
-						if (intersectedGroup.userData.label === "About Me") {
-							document.getElementById('about').style.display = 'block';
-						} else if (intersectedGroup.userData.label === "Contact") {
-							document.getElementById('contact').style.display = 'block';
-						} else if (intersectedGroup.userData.label === "Services") {
-							document.getElementById('services').style.display = 'block';
-						}
-					}
-				} else {
-					// Clicked outside any object: hide all sections
-					document.getElementById('about').style.display = 'none';
-					document.getElementById('contact').style.display = 'none';
-					document.getElementById('services').style.display = 'none';
-				}
-			}, { passive: false });
+            // Display the relevant section based on userData label
+            if (intersectedGroup.userData.label === "About Me") {
+                document.getElementById('about').style.display = 'block';
+            } else if (intersectedGroup.userData.label === "Contact") {
+                document.getElementById('contact').style.display = 'block';
+            } else if (intersectedGroup.userData.label === "Services") {
+                document.getElementById('services').style.display = 'block';
+            }
+        }
+    } else {
+        // Clicked outside any object: hide all sections and reset lastClickedObject
+        document.getElementById('about').style.display = 'none';
+        document.getElementById('contact').style.display = 'none';
+        document.getElementById('services').style.display = 'none';
+        lastClickedObject = null;
+    }
+}, { passive: false });
+
 
 
         
