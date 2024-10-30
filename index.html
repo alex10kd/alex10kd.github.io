@@ -35,17 +35,7 @@
 </head>
 <body>
     <div id="label"></div>
-	<div id="mobileOverlay" style="display: none;">
-    <a href="https://github.com/alex10kd/">Github</a><br>
-    <a href="https://www.shapediver.com/app/users/alexat10k-designs-com">Shapediver</a><br>
-    <a href="https://www.instagram.com/10.000designs/">Instagram</a><br>
-    <a href="https://www.10k-designs.com/blog">Blog</a><br>
-    <a href="https://www.researchgate.net/profile/Alexandros-Christodoulou">Researchgate</a><br>
-    <a href="https://www.linkedin.com/in/achristodoulou">LinkedIn</a><br>
-    <span class="reveal" data-target="about">About Me</span><br>
-    <span class="reveal" data-target="contact">Contact</span><br>
-    <span class="reveal" data-target="services">Services</span>
-	</div>
+	
 	<div id="about" style="display: none; position: absolute; top: 10%; left: 10%; width: 80%; background: transparent; padding: 20px; color: white; font-size: 18px;"><b>Alex in a nutshell:</b><br>
 - Computational Design Technology Specialist with over a decade of experience in the AEC industry<br>
 - Advanced expertise in digital design and optimization frameworks<br>
@@ -273,71 +263,14 @@
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
         });
-		// Show the mobile overlay if the screen width is 768px or less
-		if (window.innerWidth <= 768) {
-			document.getElementById('mobileOverlay').style.display = 'block';
-		}
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+			// Variables
+			let clickTime = 0;
 
-		// Handle mouse movement for hover interaction (desktop only)
-		window.addEventListener('mousemove', function(event) {
-			if (window.innerWidth > 768) {
-				document.body.style.cursor = 'default';
-				mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-				mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-				raycaster.setFromCamera(mouse, camera);
-				var intersects = raycaster.intersectObjects(boxes, true);
-
-				if (intersects.length > 0) {
-					var intersectedGroup = intersects[0].object.parent;
-					document.body.style.cursor = 'pointer';
-					labelElement.style.display = 'block';
-					labelElement.style.left = (event.clientX + 10) + 'px';
-					labelElement.style.top = (event.clientY + 10) + 'px';
-					labelElement.innerHTML = intersectedGroup.userData.label;
-
-					boxes.forEach(function(group) {
-						group.userData.animating = group !== intersectedGroup;
-					});
-					cameraRotating = true;
-				} else {
-					labelElement.style.display = 'none';
-					boxes.forEach(function(group) {
-						group.userData.animating = true;
-					});
-					cameraRotating = true;
-				}
-			}
-		});
-
-		// Handle click for hyperlink navigation and display hidden sections (desktop only)
-		window.addEventListener('click', function(event) {
-			if (window.innerWidth > 768) {
-				raycaster.setFromCamera(mouse, camera);
-				var intersects = raycaster.intersectObjects(boxes, true);
-
-				if (intersects.length > 0) {
-					var intersectedGroup = intersects[0].object.parent;
-					if (intersectedGroup.userData.label === "About Me") {
-						document.getElementById('about').style.display = 'block';
-					} else if (intersectedGroup.userData.label === "Contact") {
-						document.getElementById('contact').style.display = 'block';
-					} else if (intersectedGroup.userData.label === "Services") {
-						document.getElementById('services').style.display = 'block';
-					} else {
-						window.open(intersectedGroup.userData.link, '_blank');
-					}
-				} else {
-					document.getElementById('about').style.display = 'none';
-					document.getElementById('contact').style.display = 'none';
-					document.getElementById('services').style.display = 'none';
-				}
-			}
-		});
-
-		// Handle pointer events for hover and click interactions on desktop
-		renderer.domElement.addEventListener('pointermove', function(event) {
-			if (window.innerWidth > 768) {
+			// Handle pointer movement for hover interaction
+			window.addEventListener('pointermove', function(event) {
 				event.preventDefault();
 				mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 				mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -348,81 +281,55 @@
 				if (intersects.length > 0) {
 					var intersectedGroup = intersects[0].object.parent;
 					labelElement.style.display = 'block';
-					labelElement.style.left = (event.clientX + (window.innerWidth < 768 ? 20 : 10)) + 'px';
-					labelElement.style.top = (event.clientY + (window.innerWidth < 768 ? 20 : 10)) + 'px';
+					labelElement.style.left = (event.clientX + 10) + 'px';
+					labelElement.style.top = (event.clientY + 10) + 'px';
 					labelElement.innerHTML = intersectedGroup.userData.label;
 					document.body.style.cursor = 'pointer';
 				} else {
 					labelElement.style.display = 'none';
 					document.body.style.cursor = 'default';
 				}
-			}
-		}, { passive: false });
+			}, { passive: false });
 
-		renderer.domElement.addEventListener('pointerup', function(event) {
-			if (window.innerWidth > 768) {
+			// Handle click events for showing/hiding sections and opening hyperlinks
+			window.addEventListener('pointerup', function(event) {
 				event.preventDefault();
 				raycaster.setFromCamera(mouse, camera);
 				var intersects = raycaster.intersectObjects(boxes, true);
 
 				if (intersects.length > 0) {
 					var intersectedGroup = intersects[0].object.parent;
-					if (intersectedGroup.userData.label === "About Me") {
-						document.getElementById('about').style.display = 'block';
-					} else if (intersectedGroup.userData.label === "Contact") {
-						document.getElementById('contact').style.display = 'block';
-					} else if (intersectedGroup.userData.label === "Services") {
-						document.getElementById('services').style.display = 'block';
+
+					if (Date.now() - clickTime < 300) {
+						// Double-click detected: open the hyperlink
+						if (intersectedGroup.userData.link) {
+							window.open(intersectedGroup.userData.link, '_blank');
+						}
 					} else {
-						window.open(intersectedGroup.userData.link, '_blank');
+						// Single-click detected: show only the tag
+						clickTime = Date.now();
+
+						// Hide all sections first
+						document.getElementById('about').style.display = 'none';
+						document.getElementById('contact').style.display = 'none';
+						document.getElementById('services').style.display = 'none';
+
+						// Display the relevant section based on userData label
+						if (intersectedGroup.userData.label === "About Me") {
+							document.getElementById('about').style.display = 'block';
+						} else if (intersectedGroup.userData.label === "Contact") {
+							document.getElementById('contact').style.display = 'block';
+						} else if (intersectedGroup.userData.label === "Services") {
+							document.getElementById('services').style.display = 'block';
+						}
 					}
 				} else {
+					// Clicked outside any object: hide all sections
 					document.getElementById('about').style.display = 'none';
 					document.getElementById('contact').style.display = 'none';
 					document.getElementById('services').style.display = 'none';
 				}
-			}
-		}, { passive: false });
-
-		// Mobile-specific behavior for hidden sections
-		document.querySelectorAll('.reveal').forEach(item => {
-			item.addEventListener('click', function(event) {
-				event.stopPropagation();
-				const targetId = this.getAttribute('data-target');
-				document.querySelectorAll('.hidden-text').forEach(section => {
-					section.style.display = (section.id === targetId) ? 'block' : 'none';
-				});
-			});
-		});
-
-				window.addEventListener('click', function(event) {
-			if (window.innerWidth <= 768) {
-				raycaster.setFromCamera(mouse, camera);
-				var intersects = raycaster.intersectObjects(boxes, true);
-
-				if (intersects.length > 0) {
-					var intersectedGroup = intersects[0].object.parent;
-					labelElement.style.display = 'block';
-					labelElement.style.left = (event.clientX + 10) + 'px';
-					labelElement.style.top = (event.clientY + 10) + 'px';
-					labelElement.innerHTML = intersectedGroup.userData.label;
-				}
-			}
-		});
-
-		window.addEventListener('dblclick', function(event) {
-			if (window.innerWidth <= 768) {
-				raycaster.setFromCamera(mouse, camera);
-				var intersects = raycaster.intersectObjects(boxes, true);
-
-				if (intersects.length > 0) {
-					var intersectedGroup = intersects[0].object.parent;
-					if (intersectedGroup.userData.link) {
-						window.open(intersectedGroup.userData.link, '_blank');
-					}
-				}
-			}
-		});
+			}, { passive: false });
 
 
         
