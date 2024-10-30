@@ -246,7 +246,7 @@
             camera.updateProjectionMatrix();
         });
 
-         // Handle mouse movement for hover interaction
+        // Handle mouse movement for hover interaction
         window.addEventListener('mousemove', function(event) {
             document.body.style.cursor = 'default';
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -264,11 +264,11 @@
                 labelElement.innerHTML = intersectedGroup.userData.label;
 
                 boxes.forEach(function(group) {
-                if (group !== intersectedGroup) {
-                    group.userData.animating = true;
-                } else {
-                    group.userData.animating = false;
-                }
+                    if (group !== intersectedGroup) {
+                        group.userData.animating = true;
+                    } else {
+                        group.userData.animating = false;
+                    }
                 });
                 cameraRotating = true;
             } else {
@@ -291,34 +291,81 @@
                     document.getElementById('about').style.display = 'block';
                 } else if (intersectedGroup.userData.label === "Contact") {
                     document.getElementById('contact').style.display = 'block';
-					 } else if (intersectedGroup.userData.label === "Services") {
+                } else if (intersectedGroup.userData.label === "Services") {
                     document.getElementById('services').style.display = 'block';
                 } else {
                     window.open(intersectedGroup.userData.link, '_blank');
                 }
             } else {
                 document.getElementById('about').style.display = 'none';
-				document.getElementById('contact').style.display = 'none';
-				document.getElementById('services').style.display = 'none';
+                document.getElementById('contact').style.display = 'none';
+                document.getElementById('services').style.display = 'none';
             }
         });
-		
-		// Add controls for mobile users
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-            window.addEventListener('touchstart', function(event) {
-                raycaster.setFromCamera(mouse, camera);
-                var intersects = raycaster.intersectObjects(boxes, true);
-                if (intersects.length > 0) {
-                    var intersectedGroup = intersects[0].object.parent;
-                    if (intersectedGroup.userData.label === "About Me") {
-                        document.getElementById('about').style.display = 'block';
-                    } else if (intersectedGroup.userData.label === "Contact") {
-                        window.location.href = intersectedGroup.userData.link;
+
+        // Add touch event handlers for mobile users
+        if ('ontouchstart' in window) {
+            // Handle touch movement for hover interaction
+            window.addEventListener('touchmove', function(event) {
+                if (event.touches.length == 1) {
+                    var touch = event.touches[0];
+                    mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+                    mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+
+                    raycaster.setFromCamera(mouse, camera);
+                    var intersects = raycaster.intersectObjects(boxes, true);
+
+                    if (intersects.length > 0) {
+                        var intersectedGroup = intersects[0].object.parent;
+                        labelElement.style.display = 'block';
+                        labelElement.style.left = (touch.clientX + 10) + 'px';
+                        labelElement.style.top = (touch.clientY + 10) + 'px';
+                        labelElement.innerHTML = intersectedGroup.userData.label;
+
+                        boxes.forEach(function(group) {
+                            if (group !== intersectedGroup) {
+                                group.userData.animating = true;
+                            } else {
+                                group.userData.animating = false;
+                            }
+                        });
+                        cameraRotating = true;
                     } else {
-                        window.open(intersectedGroup.userData.link, '_blank');
+                        labelElement.style.display = 'none';
+                        boxes.forEach(function(group) {
+                            group.userData.animating = true;
+                        });
+                        cameraRotating = true;
                     }
-                } else {
-                    document.getElementById('about').style.display = 'none';
+                }
+            });
+
+            // Handle touch start for click interaction
+            window.addEventListener('touchstart', function(event) {
+                if (event.touches.length == 1) {
+                    var touch = event.touches[0];
+                    mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+                    mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+
+                    raycaster.setFromCamera(mouse, camera);
+                    var intersects = raycaster.intersectObjects(boxes, true);
+
+                    if (intersects.length > 0) {
+                        var intersectedGroup = intersects[0].object.parent;
+                        if (intersectedGroup.userData.label === "About Me") {
+                            document.getElementById('about').style.display = 'block';
+                        } else if (intersectedGroup.userData.label === "Contact") {
+                            document.getElementById('contact').style.display = 'block';
+                        } else if (intersectedGroup.userData.label === "Services") {
+                            document.getElementById('services').style.display = 'block';
+                        } else {
+                            window.open(intersectedGroup.userData.link, '_blank');
+                        }
+                    } else {
+                        document.getElementById('about').style.display = 'none';
+                        document.getElementById('contact').style.display = 'none';
+                        document.getElementById('services').style.display = 'none';
+                    }
                 }
             });
         }
