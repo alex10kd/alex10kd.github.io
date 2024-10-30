@@ -341,33 +341,40 @@
             });
 
             // Handle touch start for click interaction
-            window.addEventListener('touchstart', function(event) {
-                if (event.touches.length == 1) {
-                    var touch = event.touches[0];
-                    mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-                    mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+            window.addEventListener('touchend', function(event) {
+				event.preventDefault(); // Prevent default behavior like scrolling
 
-                    raycaster.setFromCamera(mouse, camera);
-                    var intersects = raycaster.intersectObjects(boxes, true);
+				if (event.changedTouches.length == 1) {
+					var touch = event.changedTouches[0];
 
-                    if (intersects.length > 0) {
-                        var intersectedGroup = intersects[0].object.parent;
-                        if (intersectedGroup.userData.label === "About Me") {
-                            document.getElementById('about').style.display = 'block';
-                        } else if (intersectedGroup.userData.label === "Contact") {
-                            document.getElementById('contact').style.display = 'block';
-                        } else if (intersectedGroup.userData.label === "Services") {
-                            document.getElementById('services').style.display = 'block';
-                        } else {
-                            window.open(intersectedGroup.userData.link, '_blank');
-                        }
-                    } else {
-                        document.getElementById('about').style.display = 'none';
-                        document.getElementById('contact').style.display = 'none';
-                        document.getElementById('services').style.display = 'none';
-                    }
-                }
-            });
+					// Update the mouse vector for raycasting
+					mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+					mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+
+					// Perform raycasting
+					raycaster.setFromCamera(mouse, camera);
+					var intersects = raycaster.intersectObjects(boxes, true);
+
+					if (intersects.length > 0) {
+						var intersectedGroup = intersects[0].object.parent;
+						if (intersectedGroup.userData.label === "About Me") {
+							document.getElementById('about').style.display = 'block';
+						} else if (intersectedGroup.userData.label === "Contact") {
+							document.getElementById('contact').style.display = 'block';
+						} else if (intersectedGroup.userData.label === "Services") {
+							document.getElementById('services').style.display = 'block';
+						} else {
+							window.open(intersectedGroup.userData.link, '_blank');
+						}
+					} else {
+						// Hide all content if no box is touched
+						document.getElementById('about').style.display = 'none';
+						document.getElementById('contact').style.display = 'none';
+						document.getElementById('services').style.display = 'none';
+        }
+    }
+});
+
         }
     </script>
 </body>
