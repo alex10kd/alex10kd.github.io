@@ -306,17 +306,8 @@
 		// Add controls for mobile users
         if (/Mobi|Android/i.test(navigator.userAgent)) {
             window.addEventListener('touchstart', function(event) {
-			event.preventDefault(); // Prevents scrolling while interacting
-			mouse.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
-			mouse.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
                 raycaster.setFromCamera(mouse, camera);
                 var intersects = raycaster.intersectObjects(boxes, true);
-				//to always view the labels
-				labelElement.style.display = 'block';
-				labelElement.innerHTML = intersectedGroup.userData.label;
-				labelElement.style.left = (event.touches[0].clientX + 10) + 'px';
-				labelElement.style.top = (event.touches[0].clientY + 10) + 'px';
-	
                 if (intersects.length > 0) {
                     var intersectedGroup = intersects[0].object.parent;
                     if (intersectedGroup.userData.label === "About Me") {
