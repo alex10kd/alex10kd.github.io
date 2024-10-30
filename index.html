@@ -102,21 +102,6 @@
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2();
         var labelElement = document.getElementById('label');
-        
-        // Show all labels initially for mobile users
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-            boxes.forEach(function(group) {
-                var labelDiv = document.createElement('div');
-                labelDiv.style.position = 'absolute';
-                labelDiv.style.color = 'white';
-                labelDiv.style.fontSize = '18px';
-                labelDiv.style.pointerEvents = 'none';
-                labelDiv.style.left = (window.innerWidth / 2) + group.position.x + 'px';
-                labelDiv.style.top = (window.innerHeight / 2) - group.position.z + 'px';
-                labelDiv.innerHTML = group.userData.label;
-                document.body.appendChild(labelDiv);
-            });
-        }
 
         function createBox(i, j, index) {
             var group = new THREE.Group();
@@ -182,7 +167,7 @@
             var height = group.userData.height;
             var columnSpacing = 10;
             var numSlabs = Math.floor(height / 5); // Ensure columns match the number of slabs
-            var columnHeight = (numSlabs + 1) * 5.5; // Columns should reach the last slab
+            var columnHeight = (numSlabs) * 5.5; // Columns should reach the last slab
             var columnGeometry = new THREE.BoxGeometry(1.5, columnHeight, 1.5);
             var columnMaterial = new THREE.MeshPhysicalMaterial({
                 color: color,
@@ -261,7 +246,7 @@
             camera.updateProjectionMatrix();
         });
 
-        // Handle mouse movement for hover interaction
+         // Handle mouse movement for hover interaction
         window.addEventListener('mousemove', function(event) {
             document.body.style.cursor = 'default';
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -285,7 +270,7 @@
                     group.userData.animating = false;
                 }
                 });
-                cameraRotating = false;
+                cameraRotating = true;
             } else {
                 labelElement.style.display = 'none';
                 boxes.forEach(function(group) {
@@ -305,34 +290,24 @@
                 if (intersectedGroup.userData.label === "About Me") {
                     document.getElementById('about').style.display = 'block';
                 } else if (intersectedGroup.userData.label === "Contact") {
-                    window.location.href = intersectedGroup.userData.link;
+                    document.getElementById('contact').style.display = 'block';
+					 } else if (intersectedGroup.userData.label === "Services") {
+                    document.getElementById('services').style.display = 'block';
                 } else {
                     window.open(intersectedGroup.userData.link, '_blank');
                 }
             } else {
                 document.getElementById('about').style.display = 'none';
-            }
-                } else if (intersectedGroup.userData.label === "Contact") {
-                    window.location.href = intersectedGroup.userData.link;
-                } else {
-                    window.open(intersectedGroup.userData.link, '_blank');
-                }
-            } else {
-                document.getElementById('about').style.display = 'none';
+				document.getElementById('contact').style.display = 'none';
+				document.getElementById('services').style.display = 'none';
             }
         });
-    
-        // Add controls for mobile users
+		
+		// Add controls for mobile users
         if (/Mobi|Android/i.test(navigator.userAgent)) {
             window.addEventListener('touchstart', function(event) {
-                event.preventDefault();
-                var touch = event.touches[0];
-                mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
-
                 raycaster.setFromCamera(mouse, camera);
                 var intersects = raycaster.intersectObjects(boxes, true);
-
                 if (intersects.length > 0) {
                     var intersectedGroup = intersects[0].object.parent;
                     if (intersectedGroup.userData.label === "About Me") {
@@ -346,7 +321,6 @@
                     document.getElementById('about').style.display = 'none';
                 }
             });
-        }
         }
     </script>
 </body>
