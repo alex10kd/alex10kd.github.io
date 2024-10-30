@@ -5,7 +5,8 @@
     <title>Alex Christodoulou's Landing Page</title>
     <style>
         body { margin: 0; overflow: hidden; }
-        canvas { display: block; }
+        canvas { display: block; 
+		touch-action: none; }
         #label {
             position: absolute;
             color: white;
@@ -304,78 +305,77 @@
         });
 
         // Add touch event handlers for mobile users
-        if ('ontouchstart' in window) {
-            // Handle touch movement for hover interaction
-            window.addEventListener('touchmove', function(event) {
-                if (event.touches.length == 1) {
-                    var touch = event.touches[0];
-                    mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-                    mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+if ('ontouchstart' in window) {
+    // Handle touch movement for hover interaction
+    window.addEventListener('touchmove', function(event) {
+        event.preventDefault(); // Prevent default behavior like scrolling
 
-                    raycaster.setFromCamera(mouse, camera);
-                    var intersects = raycaster.intersectObjects(boxes, true);
+        if (event.touches.length == 1) {
+            var touch = event.touches[0];
+            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
 
-                    if (intersects.length > 0) {
-                        var intersectedGroup = intersects[0].object.parent;
-                        labelElement.style.display = 'block';
-                        labelElement.style.left = (touch.clientX + 10) + 'px';
-                        labelElement.style.top = (touch.clientY + 10) + 'px';
-                        labelElement.innerHTML = intersectedGroup.userData.label;
+            raycaster.setFromCamera(mouse, camera);
+            var intersects = raycaster.intersectObjects(boxes, true);
 
-                        boxes.forEach(function(group) {
-                            if (group !== intersectedGroup) {
-                                group.userData.animating = true;
-                            } else {
-                                group.userData.animating = false;
-                            }
-                        });
-                        cameraRotating = true;
-                    } else {
-                        labelElement.style.display = 'none';
-                        boxes.forEach(function(group) {
-                            group.userData.animating = true;
-                        });
-                        cameraRotating = true;
-                    }
+            if (intersects.length > 0) {
+                var intersectedGroup = intersects[0].object.parent;
+                labelElement.style.display = 'block';
+                labelElement.style.left = (touch.clientX + 10) + 'px';
+                labelElement.style.top = (touch.clientY + 10) + 'px';
+                labelElement.innerHTML = intersectedGroup.userData.label;
+
+                boxes.forEach(function(group) {
+                    group.userData.animating = group !== intersectedGroup;
+                });
+                cameraRotating = true;
+            } else {
+                labelElement.style.display = 'none';
+                boxes.forEach(function(group) {
+                    group.userData.animating = true;
+                });
+                cameraRotating = true;
+            }
+        }
+    }, { passive: false }); // Add passive: false here
+
+    // Handle touch end for click interaction
+    window.addEventListener('touchend', function(event) {
+        event.preventDefault(); // Prevent default behavior like scrolling
+
+        if (event.changedTouches.length == 1) {
+            var touch = event.changedTouches[0];
+
+            // Update the mouse vector for raycasting
+            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+
+            // Perform raycasting
+            raycaster.setFromCamera(mouse, camera);
+            var intersects = raycaster.intersectObjects(boxes, true);
+
+            if (intersects.length > 0) {
+                var intersectedGroup = intersects[0].object.parent;
+                if (intersectedGroup.userData.label === "About Me") {
+                    document.getElementById('about').style.display = 'block';
+                } else if (intersectedGroup.userData.label === "Contact") {
+                    document.getElementById('contact').style.display = 'block';
+                } else if (intersectedGroup.userData.label === "Services") {
+                    document.getElementById('services').style.display = 'block';
+                } else {
+                    window.open(intersectedGroup.userData.link, '_blank');
                 }
-            });
-
-            // Handle touch start for click interaction
-            window.addEventListener('touchend', function(event) {
-				event.preventDefault(); // Prevent default behavior like scrolling
-
-				if (event.changedTouches.length == 1) {
-					var touch = event.changedTouches[0];
-
-					// Update the mouse vector for raycasting
-					mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-					mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
-
-					// Perform raycasting
-					raycaster.setFromCamera(mouse, camera);
-					var intersects = raycaster.intersectObjects(boxes, true);
-
-					if (intersects.length > 0) {
-						var intersectedGroup = intersects[0].object.parent;
-						if (intersectedGroup.userData.label === "About Me") {
-							document.getElementById('about').style.display = 'block';
-						} else if (intersectedGroup.userData.label === "Contact") {
-							document.getElementById('contact').style.display = 'block';
-						} else if (intersectedGroup.userData.label === "Services") {
-							document.getElementById('services').style.display = 'block';
-						} else {
-							window.open(intersectedGroup.userData.link, '_blank');
-						}
-					} else {
-						// Hide all content if no box is touched
-						document.getElementById('about').style.display = 'none';
-						document.getElementById('contact').style.display = 'none';
-						document.getElementById('services').style.display = 'none';
+            } else {
+                // Hide all content if no box is touched
+                document.getElementById('about').style.display = 'none';
+                document.getElementById('contact').style.display = 'none';
+                document.getElementById('services').style.display = 'none';
+            }
         }
-    }
-});
+    }, { passive: false }); // Add passive: false here
+}
 
-        }
+        
     </script>
 </body>
 </html>
