@@ -304,30 +304,56 @@
             }
         });
 
-       // Pointer Events
-        renderer.domElement.addEventListener('pointermove', function(event) {
-            event.preventDefault();
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        // Add touch event handlers for mobile users
+if ('ontouchstart' in window) {
+    // Handle touch movement for hover interaction
+    window.addEventListener('touchmove', function(event) {
+        event.preventDefault(); // Prevent default behavior like scrolling
+
+        if (event.touches.length == 1) {
+            var touch = event.touches[0];
+            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+
             raycaster.setFromCamera(mouse, camera);
             var intersects = raycaster.intersectObjects(boxes, true);
+
             if (intersects.length > 0) {
                 var intersectedGroup = intersects[0].object.parent;
                 labelElement.style.display = 'block';
-                labelElement.style.left = (event.clientX + 10) + 'px';
-                labelElement.style.top = (event.clientY + 10) + 'px';
+                labelElement.style.left = (touch.clientX + 10) + 'px';
+                labelElement.style.top = (touch.clientY + 10) + 'px';
                 labelElement.innerHTML = intersectedGroup.userData.label;
-                document.body.style.cursor = 'pointer';
+
+                boxes.forEach(function(group) {
+                    group.userData.animating = group !== intersectedGroup;
+                });
+                cameraRotating = true;
             } else {
                 labelElement.style.display = 'none';
-                document.body.style.cursor = 'default';
+                boxes.forEach(function(group) {
+                    group.userData.animating = true;
+                });
+                cameraRotating = true;
             }
-        }, { passive: false });
+        }
+    }, { passive: false }); // Add passive: false here
 
-        renderer.domElement.addEventListener('pointerup', function(event) {
-            event.preventDefault();
+    // Handle touch end for click interaction
+    window.addEventListener('touchend', function(event) {
+        event.preventDefault(); // Prevent default behavior like scrolling
+
+        if (event.changedTouches.length == 1) {
+            var touch = event.changedTouches[0];
+
+            // Update the mouse vector for raycasting
+            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+
+            // Perform raycasting
             raycaster.setFromCamera(mouse, camera);
             var intersects = raycaster.intersectObjects(boxes, true);
+
             if (intersects.length > 0) {
                 var intersectedGroup = intersects[0].object.parent;
                 if (intersectedGroup.userData.label === "About Me") {
@@ -340,11 +366,16 @@
                     window.open(intersectedGroup.userData.link, '_blank');
                 }
             } else {
+                // Hide all content if no box is touched
                 document.getElementById('about').style.display = 'none';
                 document.getElementById('contact').style.display = 'none';
                 document.getElementById('services').style.display = 'none';
             }
-        }, { passive: false });
+        }
+    }, { passive: false }); // Add passive: false here
+}
+
+        
     </script>
 </body>
 </html>
