@@ -265,10 +265,10 @@
         });
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-			// Variables
+		// Variables
 let clickTime = 0;
 let lastClickedObject = null;
+raycaster.params.Points.threshold = 0.05; // Adjust raycasting precision for small objects
 
 // Handle pointer movement for hover interaction
 window.addEventListener('pointermove', function(event) {
@@ -277,10 +277,10 @@ window.addEventListener('pointermove', function(event) {
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
-    var intersects = raycaster.intersectObjects(boxes, true);
+    const intersects = raycaster.intersectObjects(boxes, true);
 
     if (intersects.length > 0) {
-        var intersectedGroup = intersects[0].object.parent;
+        const intersectedGroup = intersects[0].object.parent;
         labelElement.style.display = 'block';
         labelElement.style.left = (event.clientX + 10) + 'px';
         labelElement.style.top = (event.clientY + 10) + 'px';
@@ -292,14 +292,22 @@ window.addEventListener('pointermove', function(event) {
     }
 }, { passive: false });
 
-// Handle click events for showing/hiding sections and opening hyperlinks
+// Handle click and touch events for showing/hiding sections and opening hyperlinks
 window.addEventListener('pointerup', function(event) {
     event.preventDefault();
+
+    // Increase tolerance for touch events to improve precision
+    const tolerance = 10; // 10 pixels tolerance for touch precision
+    const pointerX = (event.clientX || event.touches[0].clientX) + tolerance;
+    const pointerY = (event.clientY || event.touches[0].clientY) + tolerance;
+    mouse.x = (pointerX / window.innerWidth) * 2 - 1;
+    mouse.y = -(pointerY / window.innerHeight) * 2 + 1;
+
     raycaster.setFromCamera(mouse, camera);
-    var intersects = raycaster.intersectObjects(boxes, true);
+    const intersects = raycaster.intersectObjects(boxes, true);
 
     if (intersects.length > 0) {
-        var intersectedGroup = intersects[0].object.parent;
+        const intersectedGroup = intersects[0].object.parent;
 
         if (intersectedGroup === lastClickedObject && Date.now() - clickTime < 300) {
             // Double-click detected on the same object: open the hyperlink
@@ -335,8 +343,6 @@ window.addEventListener('pointerup', function(event) {
         lastClickedObject = null;
     }
 }, { passive: false });
-
-
 
         
     </script>
