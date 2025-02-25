@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D City Mastermind</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            overflow: hidden;
+        }
+
+        #game-ui {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            padding: 2rem;
+        }
+
+        .container {
+            background: rgba(30, 41, 59, 0.9);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            pointer-events: all;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #60a5fa, #fb923c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 1.5rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: #1e293b;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #334155;
+            transform: translateY(-2px);
+        }
+
+        #threejs-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .palette {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .color-option.selected {
+            border-color: white;
+            transform: scale(1.1);
+        }
+
+        .message {
+            text-align: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div id="threejs-container"></div>
+    <div id="game-ui">
+        <div class="container">
+            <h1>3D City Mastermind</h1>
+            <div class="palette" id="palette"></div>
+            <div class="controls">
+                <button id="submit-guess">Submit Guess</button>
+                <button id="new-game">New Game</button>
+            </div>
+            <div class="message" id="message">Guess the secret building combination!</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene, camera, renderer, raycaster, mouse;
+        let buildings = [];
+        let feedbackSpheres = [];
+        let selectedColor = null;
+        const COLORS = [0xff4444, 0x44ff44, 0x4444ff, 0xffff44, 0xff44ff, 0xff8844];
+        const COLOR_HEIGHTS = {
+            0xff4444: 10,    // Red - medium
+            0x44ff44: 15,    // Green - tall
+            0x4444ff: 8,     // Blue - short
+            0xffff44: 12,    // Yellow - medium-tall
+            0xff44ff: 6,     // Magenta - shortest
+            0xff8844: 13     // Orange - medium-tall
+        };
+        const CODE_LENGTH = 4;
+        const MAX_GUESSES = 10;
+        let currentRow = 0;
+        let secretCode = [];
+        let gameState = 'playing';
+
+        class CityBuilding {
+            constructor(color, x, z, visible = false) {
+                this.mesh = new THREE.Group();
+                this.color = color;
+                
+                // Get height based on color or use default
+                const height = COLOR_HEIGHTS[color]  || 10;
+                const width = 6;
+                const depth = 6;
+
+                // Main building
+                const geometry = new THREE.BoxGeometry(width, height, depth);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: color,
+                    emissive: color,
+                    emissiveIntensity: 0.1,
+                    specular: 0xffffff,
+                    shininess: 30
+                });
+                const main = new THREE.Mesh(geometry, material);
+                main.position.y = height/2;
+                main.castShadow = true;
+                main.receiveShadow = true;
+                this.mesh.add(main);
+
+                // Flat roof with simple edge detail
+                const roofGeometry = new THREE.BoxGeometry(width + 0.5, 0.5, depth + 0.5);
+                const roofMaterial = new THREE.MeshPhongMaterial({ 
+                    color: color,
+                    specular: 0x888888,
+                    shininess: 50
+                });
+                const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+                roof.position.y = height + 0.25;
+                roof.castShadow = true;
+                this.mesh.add(roof);
+                
+                // Windows (simple grid pattern)
+                const windowMaterial = new THREE.MeshPhongMaterial({ 
+                    color: 0xffffff,
+                    emissive: 0xffffaa,
+                    emissiveIntensity: 0.2,
+                    transparent: true,
+                    opacity: 0.9
+                });
+                
+               
+                
+               const numWindowRows = Math.max(1, Math.round(height / 6));
+const sides = [
+    { normal: [0, 0, 1], rotation: [0, 0, 0] },       // Front
+    { normal: [1, 0, 0], rotation: [0, Math.PI/2, 0] }, // Right
+    { normal: [0, 0, -1], rotation: [0, Math.PI, 0] },  // Back
+    { normal: [-1, 0, 0], rotation: [0, -Math.PI/2, 0] } // Left
+];
+
+sides.forEach(side => {
+    for(let i = 0; i < numWindowRows; i++) {
+        for(let j = 0; j < 2; j++) {
+            const windowGeometry = new THREE.PlaneGeometry(1, 1.5);
+            const window = new THREE.Mesh(windowGeometry, windowMaterial);
+            
+            const xOffset = (j - 0.5) * 2;
+            // Calculate a dynamic yOffset based on the number of window rows
+            const yOffset = (height / numWindowRows) * i + (height / (2 * numWindowRows));
+            const offset = 0.01;
+            
+            window.position.set(
+                side.normal[0] * (depth/2 + offset) + xOffset * (1 - Math.abs(side.normal[0])),
+                yOffset,
+                side.normal[2] * (depth/2 + offset) + xOffset * (1 - Math.abs(side.normal[2]))
+            );
+            window.rotation.set(side.rotation[0], side.rotation[1], side.rotation[2]);
+            this.mesh.add(window);
+        }
+    }
+});
+
+                this.mesh.position.set(x, 0, z);
+                this.mesh.visible = visible;
+            }
+            
+            updateColor(color) {
+                this.color = color;
+                
+                
+    // Update main building color
+    const main = this.mesh.children[0];
+    main.material.color.set(color);
+    main.material.emissive.set(color);
+    
+    // Store the previous height before modification
+    const oldHeight = main.geometry.parameters.height +3;
+    const newHeight = COLOR_HEIGHTS[color]  || 10 ;
+    const width = 6;
+    const depth = 6;
+    
+    // Update main building geometry and position
+    main.geometry.dispose();
+    main.geometry = new THREE.BoxGeometry(width, newHeight, depth);
+    main.position.y = newHeight / 2;
+                
+                // Update roof position
+                const roof = this.mesh.children[1];
+		roof.material.color.set(color);
+                roof.position.y = newHeight + 0.25;
+                
+                // Remove old window meshes (assumes that windows exist from index 2 onward)
+while(this.mesh.children.length > 2) {
+    this.mesh.remove(this.mesh.children[2]);
+}
+// Recreate windows for the updated building height
+const windowMaterial = new THREE.MeshPhongMaterial({ 
+    color: 0xffffff,
+    emissive: 0xffffaa,
+    emissiveIntensity: 0.2,
+    transparent: true,
+    opacity: 0.9
+});
+const sides = [
+    { normal: [0, 0, 1], rotation: [0, 0, 0] },
+    { normal: [1, 0, 0], rotation: [0, Math.PI/2, 0] },
+    { normal: [0, 0, -1], rotation: [0, Math.PI, 0] },
+    { normal: [-1, 0, 0], rotation: [0, -Math.PI/2, 0] }
+];
+const numWindowRows = Math.max(1, Math.round(newHeight / 6));
+sides.forEach(side => {
+    for(let i = 0; i < numWindowRows; i++) {
+        for(let j = 0; j < 2; j++) {
+            const windowGeometry = new THREE.PlaneGeometry(1, 1.5);
+            const windowMesh = new THREE.Mesh(windowGeometry, windowMaterial);
+            
+            const xOffset = (j - 0.5) * 2;
+            const yOffset = (newHeight / numWindowRows) * i + (newHeight / (2 * numWindowRows));
+            const offset = 0.01;
+            
+            windowMesh.position.set(
+                side.normal[0] * (depth/2 + offset) + xOffset * (1 - Math.abs(side.normal[0])),
+                yOffset,
+                side.normal[2] * (depth/2 + offset) + xOffset * (1 - Math.abs(side.normal[2]))
+            );
+            windowMesh.rotation.set(side.rotation[0], side.rotation[1], side.rotation[2]);
+            this.mesh.add(windowMesh);
+        }
+    }
+});
+            }
+        }
+
+        function createFeedbackSphere(x, z, visible = false) {
+            const geometry = new THREE.SphereGeometry(1, 32, 16);
+            const material = new THREE.MeshPhongMaterial({ 
+                color: 0x666666,
+                emissive: 0x666666,
+                emissiveIntensity: 0.2,
+                specular: 0xffffff,
+                shininess: 100
+            });
+            
+            const sphere = new THREE.Mesh(geometry, material);
+            sphere.position.set(x, 1, z);
+            sphere.visible = visible;
+            sphere.castShadow = true;
+            
+            return sphere;
+        }
+
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a1929);
+            scene.fog = new THREE.Fog(0x0a1929, 150, 300);
+            
+            // Camera with more top-down view but still with perspective
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 10000);
+            camera.position.set(0, 100, 80); // Higher position for more top-down view
+            camera.lookAt(0, 0, 0);
+            
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.getElementById('threejs-container').appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 1);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(50, 100, 50);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.camera.near = 0.5;
+            directionalLight.shadow.camera.far = 200;
+            directionalLight.shadow.camera.left = -100;
+            directionalLight.shadow.camera.right = 100;
+            directionalLight.shadow.camera.top = 100;
+            directionalLight.shadow.camera.bottom = -100;
+            scene.add(directionalLight);
+            
+            // Ground plane
+            const groundGeometry = new THREE.PlaneGeometry(300, 300);
+            const groundMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x1e293b,
+                emissive: 0x0f172a,
+                emissiveIntensity: 0.2,
+                shininess: 10
+            });
+            
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI/2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+            
+            // Grid helper
+            const gridHelper = new THREE.GridHelper(300, 60, 0x444444, 0x333333);
+            gridHelper.position.y = 0.1;
+            scene.add(gridHelper);
+
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+        }
+
+        function createCityLayout() {
+            // Increased spacing between rows
+            const rowSpacing = 15;
+            
+            // Create guess rows as city blocks
+            // Reversed order - first row is closest to camera
+            for(let i = 0; i < MAX_GUESSES; i++) {
+                for(let j = 0; j < CODE_LENGTH; j++) {
+                    const building = new CityBuilding(
+                        0x666666,
+                        -20 + j*10,
+                        MAX_GUESSES * rowSpacing/2 - i*rowSpacing - 30, // Reversed order
+                        i === 0 // Only first row visible initially
+                    );
+                    building.mesh.userData = { row: i, col: j };
+                    buildings.push(building);
+                    scene.add(building.mesh);
+                }
+                
+                // Add feedback spheres for each row
+                for(let j = 0; j < CODE_LENGTH; j++) {
+                    const sphere = createFeedbackSphere(
+                        25 + j*3,
+                        MAX_GUESSES * rowSpacing/2 - i*rowSpacing - 30, // Reversed order
+                        i === 0 // Only first row visible initially
+                    );
+                    sphere.userData = { row: i, feedbackIndex: j };
+                    feedbackSpheres.push(sphere);
+                    scene.add(sphere);
+                }
+            }
+
+            // Create solution row at the top
+            for(let j = 0; j < CODE_LENGTH; j++) {
+                const building = new CityBuilding(
+                    0x666666,
+                    -20 + j*10,
+                    -MAX_GUESSES * rowSpacing/2 - 20, // Place solution row away from guesses
+                    false
+                );
+                building.mesh.userData = { isSolution: true, index: j };
+                buildings.push(building);
+                scene.add(building.mesh);
+            }
+        }
+
+        function initGame() {
+            // Initialize color palette
+            const palette = document.getElementById('palette');
+            palette.innerHTML = '';
+            COLORS.forEach((color, index) => {
+                const div = document.createElement('div');
+                div.className = 'color-option';
+                div.style.backgroundColor = `#${color.toString(16).padStart(6, '0')}`;
+                div.addEventListener('click', () => {
+                    document.querySelectorAll('.color-option').forEach(opt => 
+                        opt.classList.remove('selected'));
+                    div.classList.add('selected');
+                    selectedColor = color;
+                });
+                palette.appendChild(div);
+            });
+
+            // Generate secret code
+            secretCode = Array.from({ length: CODE_LENGTH }, 
+                () => COLORS[Math.floor(Math.random() * COLORS.length)]);
+            
+            // For debugging
+            console.log('Secret code:', secretCode.map(c => '#' + c.toString(16).padStart(6, '0')));
+
+            // Event listeners
+            document.getElementById('submit-guess').addEventListener('click', submitGuess);
+            document.getElementById('new-game').addEventListener('click', newGame);
+            window.addEventListener('resize', onWindowResize);
+            renderer.domElement.addEventListener('click', onCanvasClick);
+        }
+
+        function onCanvasClick(event) {
+            if(gameState !== 'playing' || !selectedColor) return;
+
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children, true);
+            
+            for(const intersect of intersects) {
+                const obj = intersect.object.parent || intersect.object;
+                if(obj && obj.userData && obj.userData.row === currentRow) {
+                    // Update building color
+                    const building = buildings.find(b => b.mesh === obj);
+                    if(building) {
+                        building.updateColor(selectedColor);
+                    }
+                }
+            }
+        }
+
+        function submitGuess() {
+            if(gameState !== 'playing') return;
+            
+            // Get current guess
+            const currentGuess = [];
+            for(let j = 0; j < CODE_LENGTH; j++) {
+                const building = buildings.find(b => 
+                    b.mesh.userData.row === currentRow && 
+                    b.mesh.userData.col === j);
+                currentGuess.push(building.color);
+            }
+            
+            // Check if any building is not colored
+            if(currentGuess.includes(0x666666)) {
+                document.getElementById('message').textContent = 
+                    "Please color all buildings before submitting!";
+                return;
+            }
+            
+            // Calculate feedback
+            const feedback = calculateFeedback(currentGuess, secretCode);
+            
+            // Update feedback spheres
+            for(let j = 0; j < CODE_LENGTH; j++) {
+                const sphere = feedbackSpheres.find(s => 
+                    s.userData.row === currentRow && 
+                    s.userData.feedbackIndex === j);
+                
+                if(j < feedback.exact) {
+                    sphere.material.color.set(0x00ff00); // Exact match - green
+                    sphere.material.emissive.set(0x00ff00);
+                } else if(j < feedback.exact + feedback.partial) {
+                    sphere.material.color.set(0xffff00); // Partial match - yellow
+                    sphere.material.emissive.set(0xffff00);
+                } else {
+                    sphere.material.color.set(0xff0000); // No match - red
+                    sphere.material.emissive.set(0xff0000);
+                }
+            }
+            
+            // Check if won
+            if(feedback.exact === CODE_LENGTH) {
+                gameState = 'won';
+                document.getElementById('message').textContent = 
+                    "Congratulations! You've solved the puzzle!";
+                
+                // Show solution buildings with correct colors
+                for(let j = 0; j < CODE_LENGTH; j++) {
+                    const solutionBuilding = buildings.find(b => 
+                        b.mesh.userData.isSolution && 
+                        b.mesh.userData.index === j);
+                    
+                    solutionBuilding.updateColor(secretCode[j]);
+                    solutionBuilding.mesh.visible = true;
+                }
+                return;
+            }
+            
+            // Move to next row
+            currentRow++;
+            
+            // Check if game is lost
+            if(currentRow >= MAX_GUESSES) {
+                gameState = 'lost';
+                document.getElementById('message').textContent = 
+                    "Game over! You've run out of guesses.";
+                
+                // Show solution buildings with correct colors
+                for(let j = 0; j < CODE_LENGTH; j++) {
+                    const solutionBuilding = buildings.find(b => 
+                        b.mesh.userData.isSolution && 
+                        b.mesh.userData.index === j);
+                    
+                    solutionBuilding.updateColor(secretCode[j]);
+                    solutionBuilding.mesh.visible = true;
+                }
+                return;
+            }
+            
+            // Make next row visible
+            for(let j = 0; j < CODE_LENGTH; j++) {
+                const nextBuilding = buildings.find(b => 
+                    b.mesh.userData.row === currentRow && 
+                    b.mesh.userData.col === j);
+                nextBuilding.mesh.visible = true;
+                
+                const nextSphere = feedbackSpheres.find(s => 
+                    s.userData.row === currentRow && 
+                    s.userData.feedbackIndex === j);
+                nextSphere.visible = true;
+            }
+            
+            document.getElementById('message').textContent = 
+                `Guess ${currentRow + 1}/${MAX_GUESSES} - Keep trying!`;
+        }
+
+        function calculateFeedback(guess, code) {
+            const codeCopy = [...code];
+            const guessCopy = [...guess];
+            let exact = 0;
+            let partial = 0;
+            
+            // First check exact matches
+            for(let i = 0; i < CODE_LENGTH; i++) {
+                if(guessCopy[i] === codeCopy[i]) {
+                    exact++;
+                    // Mark as matched
+                    guessCopy[i] = null;
+                    codeCopy[i] = null;
+                }
+            }
+            
+            // Then check partial matches
+            for(let i = 0; i < CODE_LENGTH; i++) {
+                if(guessCopy[i] !== null) {
+                    const index = codeCopy.findIndex(c => c === guessCopy[i]);
+                    if(index !== -1) {
+                        partial++;
+                        codeCopy[index] = null;
+                    }
+                }
+            }
+            
+            return { exact, partial };
+        }
+
+        function newGame() {
+            // Reset game state
+            currentRow = 0;
+            gameState = 'playing';
+            secretCode = Array.from({ length: CODE_LENGTH }, 
+                () => COLORS[Math.floor(Math.random() * COLORS.length)]);
+            
+            console.log('New secret code:', secretCode.map(c => '#' + c.toString(16).padStart(6, '0')));
+            
+            // Reset buildings
+            buildings.forEach(b => {
+                b.updateColor(0x666666);
+                
+                // Set visibility based on row
+                if(b.mesh.userData.row !== undefined) {
+                    b.mesh.visible = b.mesh.userData.row === 0;
+                } else if(b.mesh.userData.isSolution) {
+                    b.mesh.visible = false;
+                }
+            });
+            
+            // Reset feedback spheres
+            feedbackSpheres.forEach(sphere => {
+                sphere.material.color.set(0x666666);
+                sphere.material.emissive.set(0x666666);
+                sphere.visible = sphere.userData.row === 0;
+            });
+            
+            document.getElementById('message').textContent = "Guess the secret building combination!";
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Animate buildings slightly
+            buildings.forEach((building, index) => {
+                if(building.mesh.visible) {
+                    // Very subtle movement
+                    building.mesh.position.y = Math.sin(Date.now() * 0.001 + index) * 0.1;
+                }
+            });
+            
+            // Animate feedback spheres with a subtle bounce
+            feedbackSpheres.forEach((sphere, index) => {
+                if(sphere.visible) {
+                    sphere.position.y = 1 + Math.sin(Date.now() * 0.002 + index) * 0.2;
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // Start the application
+        initThreeJS();
+        createCityLayout();
+        initGame();
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alex Christodoulou - Architectural Hub</title>
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        canvas { 
+            display: block; 
+            touch-action: none;
+        }
+        #ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .building-label {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            pointer-events: none;
+            transform: translate(-50%, -120%);
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="ui">Navigate the Architectural Hub</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Initialize core components
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Lighting setup
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        // Create city grid
+        const buildings = [];
+        const gridSize = 3;
+        const spacing = 60;
+        const colors = [
+            0x2E86AB, 0x3D348B, 0x7678ED,
+            0xF7B801, 0x48BF84, 0x8A4FFF,
+            0xFF6B6B, 0x4ECDC4, 0x3A3A4A
+        ];
+
+        // Building factory function
+        function createBuilding(x, z, color, linkData) {
+            const height = 30 + Math.random() * 50;
+            
+            // Main structure
+            const geometry = new THREE.BoxGeometry(20, height, 20);
+            const material = new THREE.MeshPhongMaterial({ 
+                color: color,
+                shininess: 100,
+                specular: 0xffffff
+            });
+            const building = new THREE.Mesh(geometry, material);
+            building.position.set(x, height/2, z);
+            
+            // Add details
+            const wireframe = new THREE.LineSegments(
+                new THREE.EdgesGeometry(geometry),
+                new THREE.LineBasicMaterial({ color: 0xffffff })
+            );
+            building.add(wireframe);
+            
+            // Store metadata
+            building.userData = linkData;
+            return building;
+        }
+
+        // Generate city grid
+        for(let i = 0; i < gridSize; i++) {
+            for(let j = 0; j < gridSize; j++) {
+                const x = (i - 1) * spacing;
+                const z = (j - 1) * spacing;
+                const color = colors[i*gridSize + j];
+                const linkData = {
+                    label: ["About", "Contact", "Services", 
+                           "GitHub", "Projects", "Blog",
+                           "Research", "Teaching", "Consulting"][i*gridSize + j],
+                    link: "#"
+                };
+                
+                const building = createBuilding(x, z, color, linkData);
+                scene.add(building);
+                buildings.push(building);
+            }
+        }
+
+        // Position camera
+        camera.position.set(100, 100, 100);
+        camera.lookAt(0, 0, 0);
+
+        // Interaction system
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const label = document.createElement('div');
+        label.className = 'building-label';
+        document.body.appendChild(label);
+
+        // Mouse handlers
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(buildings);
+            
+            if(intersects.length > 0) {
+                const building = intersects[0].object;
+                label.textContent = building.userData.label;
+                label.style.left = `${e.clientX}px`;
+                label.style.top = `${e.clientY}px`;
+                label.style.opacity = '1';
+            } else {
+                label.style.opacity = '0';
+            }
+        });
+
+        window.addEventListener('click', () => {
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(buildings);
+            
+            if(intersects.length > 0) {
+                const link = intersects[0].object.userData.link;
+                window.open(link, '_blank');
+            }
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Gentle rotation
+            buildings.forEach((building, index) => {
+                building.rotation.y += 0.005;
+                building.position.y = Math.sin(Date.now()/1000 + index) * 5 + 30;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>
