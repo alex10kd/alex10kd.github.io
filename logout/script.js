@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadYouTubeAPI();
     
     // Update artist name
-    document.getElementById('artist-name').textContent = 'Alex10kd';
+    document.getElementById('artist-name').textContent = 'LOGOUT_________';
     
     // Set up social media links
     setupSocialLinks();
@@ -421,9 +421,9 @@ function playTrack(track, previewOnly = false) {
             clearTimeout(currentPreviewTimer);
         }
         
-        if (isYouTubeMode && track.youtubelink) {
+        if (track.youtubelink) {
             playYouTubeVideo(track.youtubelink, true); // true indicates preview
-        } else if (!isYouTubeMode && track.mp3filepath) {
+        } else if ( track.mp3filepath) {
             playAudioTrack(track.mp3filepath, true);
         }
         
@@ -449,7 +449,7 @@ function playTrack(track, previewOnly = false) {
             box.removeAttribute('data-previous-track');
         });
         
-        if (isYouTubeMode && track.youtubelink) {
+        if (track.youtubelink) {
             playYouTubeVideo(track.youtubelink, false);
         } else {
             playAudioTrack(track.mp3filepath, false);
@@ -556,7 +556,7 @@ function playNextTrack() {
         }
         
         const nextTrack = tracks[nextIndex];
-        if ((isYouTubeMode && nextTrack.youtubelink) || (!isYouTubeMode && nextTrack.mp3filepath)) {
+        if ((nextTrack.youtubelink) || (nextTrack.mp3filepath)) {
             foundNext = true;
             break;
         }
