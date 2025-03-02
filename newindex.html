@@ -1,0 +1,767 @@
+Copilot
+
+Type / to search
+Copilot Chat
+Three.js error in portfolio website
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex Christodoulou's Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Raleway', sans-serif;
+            color: white;
+            background-color: #0d0d0f;
+        }
+        
+        canvas {
+            display: block;
+            touch-action: none;
+        }
+        
+        #label {
+            position: absolute;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            pointer-events: none;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 5px;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            transition: width 0.5s ease-in-out;
+            overflow: hidden;
+            z-index: 50;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .info-panel.active {
+            width: 400px;
+            max-width: 80vw;
+        }
+        
+        .panel-content {
+            padding: 30px;
+            width: 400px;
+            max-width: 80vw;
+            height: 100%;
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            transition-delay: 0.3s;
+        }
+        
+        .info-panel.active .panel-content {
+            opacity: 1;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 60;
+        }
+        
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        
+        .service-item {
+            margin-bottom: 25px;
+        }
+        
+        .service-item h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #4fc3f7;
+        }
+        
+        .service-item p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #0d0d0f;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: #4fc3f7;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .hint-text {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        @media (max-width: 768px) {
+            #mobileWarning {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                color: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                text-align: center;
+                z-index: 2000;
+            }
+            
+            #mobileWarning h2 {
+                margin-bottom: 15px;
+                font-size: 24px;
+                border: none;
+            }
+            
+            #mobileWarning p {
+                margin-bottom: 20px;
+                max-width: 500px;
+                line-height: 1.5;
+            }
+            
+            #proceedAnyway {
+                padding: 10px 20px;
+                background: #4fc3f7;
+                color: #000;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+        <div class="loading-text">Loading Experience</div>
+    </div>
+    
+    <div id="label"></div>
+    
+    <div id="mobileWarning" style="display: none;">
+        <h2>Limited Mobile Experience</h2>
+        <p>This portfolio is designed for desktop viewing with WebGL support. For the best experience, please visit on a desktop device.</p>
+        <p>The mobile version may have limited functionality and performance.</p>
+        <button id="proceedAnyway">Proceed Anyway</button>
+    </div>
+    
+    <div class="hint-text" id="hintText">Click on structures to explore. Double-click to visit links.</div>
+    
+    <div class="info-panel" id="aboutPanel">
+        <button class="close-btn">&times;</button>
+        <div class="panel-content">
+            <h2>About Me</h2>
+            <p>I'm Alex Christodoulou, a computational designer and digital consultant specializing in architectural innovation through technology.</p>
+            <p>With extensive experience in parametric design and automation, I help architecture and design firms leverage cutting-edge tools to transform their workflow and creative possibilities.</p>
+            <p>My background combines technical expertise in programming with a deep understanding of architectural design principles, allowing me to bridge the gap between technology and design.</p>
+        </div>
+    </div>
+    
+    <div class="info-panel" id="contactPanel">
+        <button class="close-btn">&times;</button>
+        <div class="panel-content">
+            <h2>Contact</h2>
+            <p>I'm available for consulting, collaboration, and project inquiries.</p>
+            <p><strong>Email:</strong> alex@example.com</p>
+            <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+            <p><strong>Location:</strong> Sydney, Australia</p>
+            <p>Feel free to reach out through any of my social media platforms as well.</p>
+        </div>
+    </div>
+    
+    <div class="info-panel" id="servicesPanel">
+        <button class="close-btn">&times;</button>
+        <div class="panel-content">
+            <h2>Services</h2>
+            <div class="service-item">
+                <h3>Workflow Automation</h3>
+                <p>Streamlining processes, reducing error, and boosting productivity to help you focus on core objectives.</p>
+            </div>
+            <div class="service-item">
+                <h3>C# and Grasshopper Scripting</h3>
+                <p>Custom scripting solutions to expand design capabilities and automate complex tasks.</p>
+            </div>
+            <div class="service-item">
+                <h3>Design Optimization</h3>
+                <p>Enhancing concepts for maximum performance, aesthetics, and cost-efficiency.</p>
+            </div>
+            <div class="service-item">
+                <h3>BIM Modeling</h3>
+                <p>Delivering data-rich BIM models to improve coordination, clash detection, and streamlined project delivery.</p>
+            </div>
+            <div class="service-item">
+                <h3>Generative Design</h3>
+                <p>Leveraging algorithms for innovative, adaptable design solutions tailored to unique project needs.</p>
+            </div>
+            <div class="service-item">
+                <h3>Digital Design Consultations</h3>
+                <p>Providing expertise, tools, and strategies for clients to embrace cutting-edge design technology.</p>
+            </div>
+        </div>
+    </div>
+    
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Check if mobile device
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+        }
+        
+        if (isMobile()) {
+            document.getElementById('mobileWarning').style.display = 'flex';
+        }
+        
+        document.getElementById('proceedAnyway').addEventListener('click', function() {
+            document.getElementById('mobileWarning').style.display = 'none';
+        });
+        
+        // Basic Three.js setup
+        let scene, camera, renderer, raycaster, mouse;
+        let boxes = [];
+        let angle = 0;
+        let cameraRotating = true;
+        let lastClickedObject = null;
+        let clickTime = 0;
+        
+        // Color palette with vibrant modern colors
+        const colors = [
+            0x4fc3f7, // Light Blue
+            0x7c4dff, // Purple
+            0xff5252, // Red
+            0x66bb6a, // Green
+            0xffb74d, // Orange
+            0x9575cd, // Light Purple
+            0x4dd0e1, // Teal
+            0xf06292, // Pink
+            0xffd54f  // Yellow
+        ];
+        
+        const labels = [
+            "About Me", "Contact", "Services", "Github", "Shapediver", 
+            "Instagram", "Blog", "Researchgate", "Linkedin"
+        ];
+        
+        const links = [
+            "", "", "", "https://github.com", "https://www.shapediver.com", 
+            "https://www.instagram.com", "https://medium.com", "https://www.researchgate.net", 
+            "https://www.linkedin.com"
+        ];
+        
+        // Get DOM elements
+        const labelElement = document.getElementById('label');
+        const hintText = document.getElementById('hintText');
+        const aboutPanel = document.getElementById('aboutPanel');
+        const contactPanel = document.getElementById('contactPanel');
+        const servicesPanel = document.getElementById('servicesPanel');
+        const loadingScreen = document.getElementById('loadingScreen');
+        
+        // Initialize scene
+        function init() {
+            // Create scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0d0d0f);
+            
+            // Create camera
+            camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.set(200, 220, 150);
+            camera.lookAt(0, 0, 0);
+            
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.body.appendChild(renderer.domElement);
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0x404040, 1);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(150, 200, 100);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
+            directionalLight.shadow.camera.near = 0.5;
+            directionalLight.shadow.camera.far = 500;
+            directionalLight.shadow.camera.left = -150;
+            directionalLight.shadow.camera.right = 150;
+            directionalLight.shadow.camera.top = 150;
+            directionalLight.shadow.camera.bottom = -150;
+            directionalLight.shadow.bias = -0.0005;
+            scene.add(directionalLight);
+            
+            // Add a subtle point light for depth
+            const pointLight = new THREE.PointLight(0x7c4dff, 0.8, 300);
+            pointLight.position.set(-100, 50, -50);
+            scene.add(pointLight);
+            
+            // Setup for raycasting
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+            
+            // Create grid of boxes
+            createBoxGrid();
+            
+            // Add a ground plane with reflections
+            const groundGeometry = new THREE.PlaneGeometry(500, 500);
+            const groundMaterial = new THREE.MeshStandardMaterial({
+                color: 0x0d0d0f,
+                metalness: 0.3,
+                roughness: 0.4
+            });
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -5;
+            ground.receiveShadow = true;
+            scene.add(ground);
+            
+            // Add stars to the background
+            createStarfield();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Start animation loop
+            animate();
+            
+            // Hide loading screen after everything is loaded
+            setTimeout(() => {
+                loadingScreen.style.opacity = 0;
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    hintText.style.opacity = 1;
+                    setTimeout(() => {
+                        hintText.style.opacity = 0;
+                    }, 5000);
+                }, 500);
+            }, 1500);
+        }
+        
+        // Create a grid of architectural elements
+        function createBoxGrid() {
+            const gridSize = 3;
+            const boxSize = 40;
+            const spacing = 50;
+            const minHeight = 15;
+            const maxHeight = 150;
+            
+            let index = 0;
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    const group = new THREE.Group();
+                    
+                    // Set initial properties
+                    group.userData = {
+                        height: Math.random() * (maxHeight - minHeight) + minHeight,
+                        targetHeight: Math.random() * (maxHeight - minHeight) + minHeight,
+                        animating: true,
+                        label: labels[index],
+                        link: links[index],
+                        color: colors[index],
+                        animationPhase: Math.random() * Math.PI * 2 // Random phase for wave-like animation
+                    };
+                    
+                    // Position the group
+                    group.position.x = (i - 1) * (boxSize + spacing);
+                    group.position.z = (j - 1) * (boxSize + spacing);
+                    
+                    // Create building components
+                    updateSlabs(group, colors[index]);
+                    updateColumns(group, colors[index]);
+                    
+                    // Add to scene
+                    scene.add(group);
+                    boxes.push(group);
+                    
+                    index++;
+                }
+            }
+        }
+        
+        // Update slabs (horizontal elements)
+        function updateSlabs(group, color) {
+            // Remove existing slabs
+            const slabs = group.children.filter(child => child.geometry && child.geometry.type === 'PlaneGeometry');
+            slabs.forEach(function(child) {
+                group.remove(child);
+                child.geometry.dispose();
+                if (child.material) child.material.dispose();
+            });
+            
+            const height = group.userData.height;
+            const numSlabs = Math.floor(height / 5);
+            
+            // Create base platform
+            const baseGeometry = new THREE.BoxGeometry(45, 2, 45);
+            const baseMaterial = new THREE.MeshPhysicalMaterial({
+                color: color,
+                metalness: 0.3,
+                roughness: 0.7,
+                clearcoat: 0.4,
+                clearcoatRoughness: 0.25,
+                transparent: true,
+                opacity: 0.9
+            });
+            
+            const base = new THREE.Mesh(baseGeometry, baseMaterial);
+            base.position.y = -1;
+            base.castShadow = true;
+            base.receiveShadow = true;
+            group.add(base);
+            
+            // Create slabs with better materials
+            const geometry = new THREE.PlaneGeometry(40, 40);
+            const material = new THREE.MeshPhysicalMaterial({
+                color: color,
+                side: THREE.DoubleSide,
+                metalness: 0.2,
+                roughness: 0.7,
+                clearcoat: 0.3,
+                clearcoatRoughness: 0.2,
+                transparent: true,
+                opacity: 0.85
+            });
+            
+            for (let k = 0; k < numSlabs; k++) {
+                const slab = new THREE.Mesh(geometry, material);
+                slab.rotation.x = -Math.PI / 2;
+                slab.position.y = k * 5.5 + 3; // Start above base
+                slab.receiveShadow = true;
+                slab.castShadow = true;
+                group.add(slab);
+            }
+        }
+        
+        // Update columns (vertical elements)
+        function updateColumns(group, color) {
+            // Remove existing columns
+            const columns = group.children.filter(child => child.geometry && child.geometry.type === 'BoxGeometry' && child.scale.y > 2);
+            columns.forEach(function(child) {
+                group.remove(child);
+                child.geometry.dispose();
+                if (child.material) child.material.dispose();
+            });
+            
+            const height = group.userData.height;
+            const columnHeight = Math.max(height, 10);
+            
+            // Create columns with better materials
+            const columnMaterial = new THREE.MeshPhysicalMaterial({
+                color: color,
+                metalness: 0.3,
+                roughness: 0.6,
+                clearcoat: 0.5,
+                clearcoatRoughness: 0.3
+            });
+            
+            // Create thicker corner columns for structural emphasis
+            const cornerPositions = [
+                { x: -20, z: -20 },
+                { x: -20, z: 20 },
+                { x: 20, z: -20 },
+                { x: 20, z: 20 }
+            ];
+            
+            // Add corner columns
+            cornerPositions.forEach(pos => {
+                const cornerGeometry = new THREE.BoxGeometry(3, columnHeight, 3);
+                const column = new THREE.Mesh(cornerGeometry, columnMaterial);
+                column.position.set(pos.x, columnHeight / 2, pos.z);
+                column.castShadow = true;
+                group.add(column);
+            });
+        }
+        
+        // Create starfield background
+        function createStarfield() {
+            const starGeometry = new THREE.BufferGeometry();
+            const starCount = 1000;
+            
+            const positions = new Float32Array(starCount * 3);
+            
+            for (let i = 0; i < starCount; i++) {
+                const i3 = i * 3;
+                positions[i3] = (Math.random() - 0.5) * 1000;
+                positions[i3 + 1] = (Math.random() - 0.5) * 1000;
+                positions[i3 + 2] = (Math.random() - 0.5) * 1000;
+            }
+            
+            starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            
+            const starMaterial = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 1,
+                transparent: true,
+                opacity: 0.8
+            });
+            
+            const starField = new THREE.Points(starGeometry, starMaterial);
+            scene.add(starField);
+        }
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+            
+            // Animate each building
+            boxes.forEach(function(group) {
+                if (group.userData.animating) {
+                    // Create a wave-like animation effect
+                    const phasedTime = time + group.userData.animationPhase;
+                    
+                    // Smoothly adjust the target height with a sin wave
+                    group.userData.targetHeight = 
+                        (Math.sin(phasedTime * 0.3) * 30) + // Slow large wave
+                        (Math.sin(phasedTime * 1.2) * 5) +  // Medium faster wave
+                        100; // Base height
+                    
+                    // Apply height changes with damping for smooth transitions
+                    const delta = (group.userData.targetHeight - group.userData.height) * 0.05;
+                    group.userData.height += delta;
+                    
+                    // Update the visual elements
+                    updateSlabs(group, group.userData.color);
+                    updateColumns(group, group.userData.color);
+                    
+                    // Subtle rotation for more dynamic feel
+                    group.rotation.y = Math.sin(phasedTime * 0.2) * 0.05;
+                }
+            });
+            
+            // Camera rotation
+            if (cameraRotating) {
+                angle += 0.0003;
+                camera.position.x = 180 * Math.cos(angle);
+                camera.position.z = 180 * Math.sin(angle);
+                camera.lookAt(0, 0, 0);
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Handle window resize
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            window.addEventListener('resize', onWindowResize);
+            
+            // Mouse move event for hover interactions
+            window.addEventListener('mousemove', onPointerMove);
+            
+            // Click event for selecting buildings
+            window.addEventListener('click', onPointerClick);
+            
+            // Add event listeners to close buttons
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                btn.addEventListener('click', closeAllPanels);
+            });
+        }
+        
+        // Handle mouse move for hover effect
+        function onPointerMove(event) {
+            event.preventDefault();
+            
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children, true);
+            
+            let hoveredGroup = null;
+            
+            for (let i = 0; i < intersects.length; i++) {
+                // Find the parent group of the intersected object
+                let parent = intersects[i].object;
+                while (parent && !boxes.includes(parent)) {
+                    parent = parent.parent;
+                }
+                
+                if (parent && boxes.includes(parent)) {
+                    hoveredGroup = parent;
+                    break;
+                }
+            }
+            
+            if (hoveredGroup) {
+                labelElement.style.opacity = 1;
+                labelElement.style.left = (event.clientX + 10) + 'px';
+                labelElement.style.top = (event.clientY + 10) + 'px';
+                labelElement.textContent = hoveredGroup.userData.label;
+                document.body.style.cursor = 'pointer';
+                
+                // Subtle highlight effect
+                hoveredGroup.position.y = 3;
+            } else {
+                labelElement.style.opacity = 0;
+                document.body.style.cursor = 'default';
+                
+                // Reset position
+                boxes.forEach(box => {
+                    if (box.position.y > 0) {
+                        box.position.y = 0;
+                    }
+                });
+            }
+        }
+        
+        // Handle click on buildings
+        function onPointerClick(event) {
+            event.preventDefault();
+            
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children, true);
+            
+            let clickedGroup = null;
+            
+            for (let i = 0; i < intersects.length; i++) {
+                // Find the parent group of the intersected object
+                let parent = intersects[i].object;
+                while (parent && !boxes.includes(parent)) {
+                    parent = parent.parent;
+                }
+                
+                if (parent && boxes.includes(parent)) {
+                    clickedGroup = parent;
+                    break;
+                }
+            }
+            
+            if (clickedGroup) {
+                // Check for double click
+                if (clickedGroup === lastClickedObject && Date.now() - clickTime < 300) {
+                    // Double-click detected - open link if available
+                    if (clickedGroup.userData.link) {
+                        window.open(clickedGroup.userData.link, '_blank');
+                    }
+                    lastClickedObject = null;
+                } else {
+                    // Single-click detected - show panel based on label
+                    clickTime = Date.now();
+                    lastClickedObject = clickedGroup;
+                    
+                    // Close all panels first
+                    closeAllPanels();
+                    
+                    // Show the appropriate panel
+                    if (clickedGroup.userData.label === "About Me") {
+                        aboutPanel.classList.add('active');
+                    } else if (clickedGroup.userData.label === "Contact") {
+                        contactPanel.classList.add('active');
+                    } else if (clickedGroup.userData.label === "Services") {
+                        servicesPanel.classList.add('active');
+                    } else if (clickedGroup.userData.link) {
+                        // For other items with links, highlight to indicate they're clickable
+                        clickedGroup.position.y = 5;
+                        setTimeout(() => {
+                            clickedGroup.position.y = 0;
+                        }, 300);
+                    }
+                }
+            } else {
+                // Clicked outside - close panels
+                closeAllPanels();
+                lastClickedObject = null;
+            }
+        }
+        
+        // Close all information panels
+        function closeAllPanels() {
+            aboutPanel.classList.remove('active');
+            contactPanel.classList.remove('active');
+            servicesPanel.classList.remove('active');
+        }
+        
+        // Initialize when the page loads
+        window.onload = init;
+    </script>
+</body>
+</html>

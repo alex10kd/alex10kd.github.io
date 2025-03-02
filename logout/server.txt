@@ -1,0 +1,18 @@
+
+
+Open Command Prompt (Windows) 
+Navigate to your project folder:
+
+Code
+
+
+
+cd C:/Users/chris/Desktop/GIT/alex10kd.github.io/logout
+
+
+Code
+python -m http.server 8000
+
+
+Browse:
+http://localhost:8000

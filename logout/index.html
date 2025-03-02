@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGOUT - Musician Landing Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.1/papaparse.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="artist-name">LOGOUT</h1>
+        </header>
+        
+        <div id="loading-indicator">Loading tracks... Please wait.</div>
+        <div id="error-message" style="color: red; display: none;"></div>
+        
+        <main>
+            <div id="tracks-master-container" class="tracks-master-container">
+                <!-- All tracks will be inserted here in a continuous grid -->
+            </div>
+        </main>
+
+        <div class="player-controls">
+            <div class="now-playing">
+                <span id="now-playing-text">Not Playing</span>
+            </div>
+            <div class="player-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="media-toggle">
+                    <span class="slider"></span>
+                </label>
+                <span>Use YouTube</span>
+            </div>
+        </div>
+
+        <div id="youtube-player-container" class="hidden">
+            <!-- YouTube player will be embedded here -->
+            <div id="youtube-player"></div>
+            <button id="close-youtube">Close</button>
+        </div>
+        
+        <footer>
+            <div class="social-links">
+                <a href="#" class="social-link" title="Spotify"><i class="fab fa-spotify"></i></a>
+                <a href="#" class="social-link" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-link" title="SoundCloud"><i class="fab fa-soundcloud"></i></a>
+                <a href="#" class="social-link" title="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="copyright">
+                © <span id="current-year"></span> LOGOUT. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <!-- Audio player (hidden) -->
+    <audio id="audio-player"></audio>
+    
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Simple error handler to display errors on page
+        window.addEventListener('error', function(event) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.style.display = 'block';
+            errorDiv.innerHTML += `<p>Error: ${event.message}</p>`;
+            console.error(event);
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
