@@ -1,6 +1,5 @@
 // Global variables
 let currentAudio = null;
-let isYouTubeMode = false;
 let youtubePlayer = null;
 let tracks = [];
 let currentTrack = null;
@@ -11,22 +10,50 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load track data from CSV
     loadTracks();
     
-    // Setup media toggle
-    const mediaToggle = document.getElementById('media-toggle');
-    mediaToggle.addEventListener('change', function() {
-        isYouTubeMode = this.checked;
-        if (currentTrack && isYouTubeMode) {
-            playYouTubeVideo(currentTrack.youtubelink);
-        } else if (currentTrack) {
-            closeYouTubePlayer();
-            playAudioTrack(currentTrack.mp3filepath, false);
-        } else {
-            closeYouTubePlayer();
-        }
-    });
-    
-    // Setup close button for YouTube player
-    document.getElementById('close-youtube').addEventListener('click', closeYouTubePlayer);
+    // Add event listener to tracks container for when mouse leaves the entire area
+    const tracksContainer = document.getElementById('tracks-master-container');
+    if (tracksContainer) {
+        tracksContainer.addEventListener('mouseleave', function() {
+            // Stop any preview that's currently playing
+            const audioPlayer = document.getElementById('audio-player');
+            const previewTrack = document.querySelector('.track-box[data-preview="true"]');
+            
+            if (previewTrack) {
+                // Stop the audio preview
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+                
+                // Remove the preview indication
+                previewTrack.removeAttribute('data-preview');
+                previewTrack.classList.remove('playing');
+                
+                // Reset any timers
+                if (currentPreviewTimer) {
+                    clearTimeout(currentPreviewTimer);
+                    currentPreviewTimer = null;
+                }
+                
+                // If there was a "real" playing track before this preview, restore its status
+                const previousTrackName = previewTrack.getAttribute('data-previous-track');
+                if (previousTrackName) {
+                    document.querySelectorAll('.track-box').forEach(box => {
+                        if (box.getAttribute('data-name') === previousTrackName) {
+                            box.classList.add('playing');
+                        }
+                    });
+                    
+                    // Restart playback of previous track if it exists
+                    if (currentTrack) {
+                        if (currentTrack.youtubelink) {
+                            playYouTubeVideo(currentTrack.youtubelink);
+                        } else if (currentTrack.mp3filepath) {
+                            playAudioTrack(currentTrack.mp3filepath, false);
+                        }
+                    }
+                }
+            }
+        });
+    }
     
     // Load YouTube API
     loadYouTubeAPI();
@@ -77,10 +104,17 @@ window.onYouTubeIframeAPIReady = function() {
             'autoplay': 0
         },
         events: {
-            'onStateChange': onPlayerStateChange
+            'onStateChange': onPlayerStateChange,
+            'onReady': onPlayerReady
         }
     });
 };
+
+// Handle when YouTube player is ready
+function onPlayerReady(event) {
+    // YouTube player is ready
+    console.log("YouTube player ready");
+}
 
 // Handle YouTube player state changes
 function onPlayerStateChange(event) {
@@ -175,6 +209,7 @@ function createSampleTracks() {
     document.getElementById('loading-indicator').style.display = 'none';
 }
 
+// Render tracks in vertical columns
 function renderVerticalTracks(tracks) {
     const container = document.getElementById('tracks-master-container');
     container.innerHTML = '';
@@ -247,8 +282,6 @@ function renderVerticalTracks(tracks) {
                     trackBox.classList.add('unreleased');
                 }
                 
-                const imageUrl = track.imagefilepath || (track.youtubelink && `https://img.youtube.com/vi/${track.youtubelink}/hqdefault.jpg`) || 'path/to/default/image.jpg';
-                
                 trackBox.setAttribute('data-mp3', track.mp3filepath || '');
                 trackBox.setAttribute('data-youtube', track.youtubelink || '');
                 trackBox.setAttribute('data-name', track.songname);
@@ -256,7 +289,7 @@ function renderVerticalTracks(tracks) {
                 trackBox.setAttribute('data-index', track.indexonalbum);
                 
                 trackBox.innerHTML = `
-                    <img src="${imageUrl}" alt="${track.songname}" class="track-image">
+                    <img src="${track.imagefilepath}" alt="${track.songname}" class="track-image">
                     <div class="track-info">
                         <div class="track-name">${track.songname}</div>
                     </div>
@@ -266,22 +299,52 @@ function renderVerticalTracks(tracks) {
                 if (track.mp3filepath || track.youtubelink) {
                     trackBox.addEventListener('click', () => playTrack(track, false));
                     trackBox.addEventListener('mouseenter', () => {
+                        // Mark all track boxes to ensure we know which track was being hovered
+                        document.querySelectorAll('.track-box').forEach(box => {
+                            box.removeAttribute('data-preview');
+                        });
+                        
                         if (!currentTrack || currentTrack.songname !== track.songname) {
                             playTrack(track, true);
                         }
                     });
                     trackBox.addEventListener('mouseleave', () => {
-                        if (currentPreviewTimer) {
-                            clearTimeout(currentPreviewTimer);
-                            currentPreviewTimer = null;
+                        // If this track is being previewed, stop the preview
+                        if (trackBox.hasAttribute('data-preview')) {
+                            // Clear any preview timer if it exists
+                            if (currentPreviewTimer) {
+                                clearTimeout(currentPreviewTimer);
+                                currentPreviewTimer = null;
+                            }
                             
-                            // Only stop if we're in preview mode and it's this track
-                            const currentlyPlayingBox = document.querySelector('.track-box.playing');
-                            if (currentlyPlayingBox === trackBox) {
-                                const audioPlayer = document.getElementById('audio-player');
-                                audioPlayer.pause();
-                                audioPlayer.currentTime = 0;
-                                trackBox.classList.remove('playing');
+                            // Stop the audio preview
+                            const audioPlayer = document.getElementById('audio-player');
+                            audioPlayer.pause();
+                            audioPlayer.currentTime = 0;
+                            
+                            // Remove the preview indication
+                            trackBox.removeAttribute('data-preview');
+                            trackBox.classList.remove('playing');
+                            
+                            // If there was a "real" playing track before this preview, restore its status
+                            const previousTrackName = trackBox.getAttribute('data-previous-track');
+                            if (previousTrackName) {
+                                document.querySelectorAll('.track-box').forEach(box => {
+                                    if (box.getAttribute('data-name') === previousTrackName) {
+                                        box.classList.add('playing');
+                                    }
+                                });
+                                trackBox.removeAttribute('data-previous-track');
+                                
+                                // Resume playing the previous track if any
+                                const previousTrack = tracks.find(t => t.songname === previousTrackName);
+                                if (previousTrack) {
+                                    if (previousTrack.youtubelink) {
+                                        playYouTubeVideo(previousTrack.youtubelink);
+                                    } else if (previousTrack.mp3filepath) {
+                                        playAudioTrack(previousTrack.mp3filepath, false);
+                                    }
+                                }
                             }
                         }
                     });
@@ -301,16 +364,27 @@ function renderVerticalTracks(tracks) {
     });
 }
 
-// Play a track
+	// Play a track
 function playTrack(track, previewOnly = false) {
-    currentTrack = track;
+    // Don't change currentTrack if this is just a preview
+    const previousTrack = previewOnly ? currentTrack : null;
+    
+    // Only update the current track if this is not a preview
+    if (!previewOnly) {
+        currentTrack = track;
+    }
     
     // Update now playing text
-    document.getElementById('now-playing-text').textContent = `Now Playing: ${track.songname}`;
+    document.getElementById('now-playing-text').textContent = previewOnly ? 
+        `Preview: ${track.songname}` : 
+        `Now Playing: ${track.songname}`;
     
-    // Remove playing class from all tracks
+    // Remove playing class from all tracks if not in preview mode
+    // If in preview mode, only remove from tracks that were also previews
     document.querySelectorAll('.track-box.playing').forEach(box => {
-        box.classList.remove('playing');
+        if (!previewOnly || box.hasAttribute('data-preview')) {
+            box.classList.remove('playing');
+        }
     });
     
     // Find the current track box and add playing class
@@ -322,6 +396,17 @@ function playTrack(track, previewOnly = false) {
             box.classList.add('playing');
             currentTrackBox = box;
             
+            // Set preview status
+            if (previewOnly) {
+                box.setAttribute('data-preview', 'true');
+                if (previousTrack) {
+                    box.setAttribute('data-previous-track', previousTrack.songname);
+                }
+            } else {
+                box.removeAttribute('data-preview');
+                box.removeAttribute('data-previous-track');
+            }
+            
             // Scroll into view if not in preview mode
             if (!previewOnly) {
                 box.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -330,28 +415,43 @@ function playTrack(track, previewOnly = false) {
         }
     }
     
-   if (previewOnly) {
-    // For preview, play the full song
-    if (currentPreviewTimer) {
-        clearTimeout(currentPreviewTimer);
-        currentPreviewTimer = null;
-    }
-    
-    playAudioTrack(track.mp3filepath, true);
-    
-    // No timeout - let it play fully
-}
- else {
+    if (previewOnly) {
+        // For preview, play based on current mode
+        if (currentPreviewTimer) {
+            clearTimeout(currentPreviewTimer);
+        }
+        
+        if (isYouTubeMode && track.youtubelink) {
+            playYouTubeVideo(track.youtubelink, true); // true indicates preview
+        } else if (!isYouTubeMode && track.mp3filepath) {
+            playAudioTrack(track.mp3filepath, true);
+        }
+        
+        // Set a flag to indicate this is a preview
+        if (currentTrackBox) {
+            currentTrackBox.setAttribute('data-preview', 'true');
+            
+            // Store the previous track to restore after preview
+            if (previousTrack) {
+                currentTrackBox.setAttribute('data-previous-track', previousTrack.songname);
+            }
+        }
+    } else {
         // For full play
         if (currentPreviewTimer) {
             clearTimeout(currentPreviewTimer);
             currentPreviewTimer = null;
         }
         
+        // Remove preview status from all tracks
+        document.querySelectorAll('.track-box').forEach(box => {
+            box.removeAttribute('data-preview');
+            box.removeAttribute('data-previous-track');
+        });
+        
         if (isYouTubeMode && track.youtubelink) {
-            playYouTubeVideo(track.youtubelink);
+            playYouTubeVideo(track.youtubelink, false);
         } else {
-            closeYouTubePlayer();
             playAudioTrack(track.mp3filepath, false);
         }
     }
@@ -391,7 +491,7 @@ function playAudioTrack(mp3Path, isPreview = false) {
 }
 
 // Play YouTube video
-function playYouTubeVideo(youtubeLink) {
+function playYouTubeVideo(youtubeLink, isPreview = false) {
     if (!youtubeLink) {
         console.warn('No YouTube link provided');
         return;
@@ -424,29 +524,16 @@ function playYouTubeVideo(youtubeLink) {
         return;
     }
     
-    // Show YouTube player container
-    const playerContainer = document.getElementById('youtube-player-container');
-    playerContainer.classList.remove('hidden');
-    
-    // Load and play video
+    // Player is always visible, so we just load and play the video
     if (youtubePlayer && youtubePlayer.loadVideoById) {
         youtubePlayer.loadVideoById(videoId);
     }
-	}
+}
 
-// Close YouTube player
-function closeYouTubePlayer() {
-    const playerContainer = document.getElementById('youtube-player-container');
-    playerContainer.classList.add('hidden');
-    
-    // Stop YouTube video
+// Stop YouTube video without hiding the player
+function stopYouTubeVideo() {
     if (youtubePlayer && youtubePlayer.stopVideo) {
         youtubePlayer.stopVideo();
-    }
-    
-    // If there's a current track, resume audio
-    if (currentTrack && currentTrack.mp3filepath && !isYouTubeMode) {
-        playAudioTrack(currentTrack.mp3filepath, false);
     }
 }
 
@@ -457,7 +544,7 @@ function playNextTrack() {
     // Find current track index
     const currentIndex = tracks.findIndex(track => track.songname === currentTrack.songname);
     
-    if (currentIndex === -1) return;iew
+    if (currentIndex === -1) return; // Removed erroneous "iew" text
     
     // Find next track with media
     let nextIndex = currentIndex + 1;

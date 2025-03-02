@@ -28,19 +28,13 @@
             <div class="now-playing">
                 <span id="now-playing-text">Not Playing</span>
             </div>
-            <div class="player-toggle">
-                <label class="switch">
-                    <input type="checkbox" id="media-toggle">
-                    <span class="slider"></span>
-                </label>
-                <span>Use YouTube</span>
-            </div>
+            <!-- Toggle removed as per request -->
         </div>
 
-        <div id="youtube-player-container" class="hidden">
+        <!-- YouTube player container is always visible (removed 'hidden' class) -->
+        <div id="youtube-player-container">
             <!-- YouTube player will be embedded here -->
             <div id="youtube-player"></div>
-            <button id="close-youtube">Close</button>
         </div>
         
         <footer>
