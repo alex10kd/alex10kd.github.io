@@ -1,20 +1,48 @@
 ﻿imagefilepath,mp3filepath,songname,youtubelink,album,indexonalbum
+images/ililog.jpg,audio/Τσούχτρες.mp3,Airball - Ilithios X Logout,https://www.youtube.com/watch?v=O4-5-9Vlo6g,SINGLES,
+images/ililog.jpg,audio/Τσούχτρες.mp3,Sirens - Ilithios X Logout,https://www.youtube.com/watch?v=tzow5LApGMQ,SINGLES,
+images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Ανύπαρκτοι,https://www.youtube.com/watch?v=FQNg5DjPKtQ,Unreleased,1
+images/nisi.jpg,audio/Τσούχτρες.mp3,Kukuraxa - Nisi (Logout Remix),https://www.youtube.com/watch?v=uP8Z4NVFulI,SINGLES,5
+images/mallia.jpg,audio/Τσούχτρες.mp3,Τα Μαλλιά Της,https://www.youtube.com/watch?v=57vb9XiIXjM,SINGLES,4
+images/kalanta.JPG,audio/Τσούχτρες.mp4,Christmas in Whateverland,https://www.youtube.com/watch?v=uBarNeGS01g,SINGLES,
+images/kalanta.JPG,audio/Τσούχτρες.mp5,Thracian Kalanta,https://www.youtube.com/watch?v=AkbCTagjgeE,SINGLES,
+images/kalanta.JPG,audio/Τσούχτρες.mp6,New Year's Anthem 2024,https://www.youtube.com/watch?v=Q8txEeEFBNY,SINGLES,
+images/kanonik.JPG,audio/Τσούχτρες.mp6,Kanonikotita,https://www.youtube.com/watch?v=bGujfpDD1d0,SINGLES,
+images/tsouxtres2.jpg,audio/Τσούχτρες.mp3,Τσούχτρες,https://www.youtube.com/watch?v=swFKwDUDPq8,SINGLES,2
+images/athina.jpg,audio/Τσούχτρες.mp3,Αθήνα Είσαι Τέλεια,https://www.youtube.com/watch?v=Qzy2PWyUaTE,SINGLES,3
+images/iliov.jpg,audio/Τσούχτρες.mp3,Ηλιοβασίλεμα (feat. Nalyssa Green),https://www.youtube.com/watch?v=2iQ3Fv0Iqyo,SINGLES,1
 images/lovemeromantso.JPG,audio/Τσούχτρες.mp3,Love Me (Live στο Romantso),https://www.youtube.com/watch?v=PSN0lEzHCRs,Live,1
+images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Eleven Steps / Malignant (Live at ΠΛ.ΥΦ.Α) [feat. Kalliopi Mitropoulou & Orestis Petrakis],https://www.youtube.com/watch?v=_I1h2nfV1Nk,Live,
+images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Τηλελάιβ 2 (Nalyssa x Τρίχρωμη x Logout),https://www.youtube.com/watch?v=9qoMIIjC6K8&t=851s,Live,
 images/hymnsofar.jpg,audio/Τσούχτρες.mp3,Hymn to Concrete (Live Sofar Amsterdam),https://www.youtube.com/watch?v=NpgJ6_rpOpY,Live,
 images/kkr.jpg,audio/Τσούχτρες.mp3,Καμιά Κάμερα (Live στο Romantso),https://www.youtube.com/watch?v=6JstQIVCx2U,Live,2
 images/byrsplyfa.jpg,audio/Τσούχτρες.mp3,Bayorsai (Live at ΠΛ.ΥΦ.Α) [feat. Kalliopi Mitropoulou & Orestis Petrakis],https://www.youtube.com/watch?v=YYcFfQdwmoA,Live,3
-images/EncoreWhereitGoes.JPG,audio/Τσούχτρες.mp3,Where it Goes (Live for Encore 2),https://www.youtube.com/watch?v=oNj7xHPCAI0,Live,
 images/sundayagpar.JPG,audio/Τσούχτρες.mp3,In a Sunday Morning (Unplugged),https://www.youtube.com/watch?v=A489sgCXuDs,Live,
 images/bayorsaibios.JPG,audio/Τσούχτρες.mp3,Logout - Live at Bios Terrace (N91° Release Concert),https://www.youtube.com/watch?v=Dg6abuFmNzg,Live,
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Πονέμελα - Live στο six d.o.g.s.,https://www.youtube.com/watch?v=2WFZZ6BgWXs&t=1353s,Live,
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Rebellion - The Place Within (Live at Mad Day Live),https://www.youtube.com/watch?v=B4bF5upJlps,Live,
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Upside Down - The Place Within (Live at Mad Day Live),https://www.youtube.com/watch?v=5tTKvZTEF_k,Live,
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Web Nationality - The Place Within (Live at Mad Day Live),https://www.youtube.com/watch?v=elT6kxWfjCQ,Live,
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Darling - The Place Within (Live at Mad Day Live),https://www.youtube.com/watch?v=OLk9ash3-SU,Live,
+images/ponemelasixdogs.JPG,audio/Τσούχτρες.mp3,Πονέμελα - Live στο six d.o.g.s.,https://www.youtube.com/watch?v=2WFZZ6BgWXs&t=1353s,Live,
+images/reb_mad.JPG,audio/Τσούχτρες.mp3,Rebellion - The Place Within (Live at Mad Day Live),https://www.youtube.com/watch?v=B4bF5upJlps,Live,
+images/madupsidedown.JPG,audio/Τσούχτρες.mp3,Upside Down - The Place Within (Live at Mad Day Live),https://www.youtube.com/watch?v=5tTKvZTEF_k,Live,
+images/webmad.jpg,audio/Τσούχτρες.mp3,Web Nationality - The Place Within (Live at Mad Day Live),https://www.youtube.com/watch?v=elT6kxWfjCQ,Live,
+images/darlingmad.jpg,audio/Τσούχτρες.mp3,Darling - The Place Within (Live at Mad Day Live),https://www.youtube.com/watch?v=OLk9ash3-SU,Live,
+images/EncoreWhereitGoes.JPG,audio/Τσούχτρες.mp3,Where it Goes (Live for Encore 2),https://www.youtube.com/watch?v=oNj7xHPCAI0,Live,
 images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Where It Goes (Live in Dordrecht),https://www.youtube.com/watch?v=jw1OwiPgN5M,Live,
 images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Love Me (Live in Dordrecht),https://www.youtube.com/watch?v=Si-vCudjWlY,Live,
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Eleven Steps / Malignant (Live at ΠΛ.ΥΦ.Α) [feat. Kalliopi Mitropoulou & Orestis Petrakis],https://www.youtube.com/watch?v=_I1h2nfV1Nk,Live,
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Τηλελάιβ 2 (Nalyssa x Τρίχρωμη x Logout),https://www.youtube.com/watch?v=9qoMIIjC6K8&t=851s,Live,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
 images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Πανδημία,https://www.youtube.com/watch?v=LHozGvX_ZJ4,Unreleased,
 images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Χριστούγεννα (Nalyssa x Τρίχρωμη x Logout) [Δέσποινα Βανδή Cover],https://www.youtube.com/watch?v=pi_-Gvpl68o,Unreleased,
 images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Bearly,https://www.youtube.com/watch?v=hM1H-tfAjKw,Unreleased,
@@ -25,102 +53,95 @@ images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Long Shadows Point West,https:
 images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Poke,https://www.youtube.com/watch?v=v1B-tPqedKs,Unreleased,
 images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Logout - Χρυσαλιφούρφουρο (cover),https://www.youtube.com/watch?v=65539U-Psug,Unreleased,
 images/tsouxtres.jpg,audio/Τσούχτρες.mp3,"I Will Know in Time, What I Want",https://www.youtube.com/watch?v=-VrR1IsJGdI,Unreleased,
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Airball - Ilithios X Logout,https://www.youtube.com/watch?v=O4-5-9Vlo6g,SINGLES,
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Sirens - Ilithios X Logout,https://www.youtube.com/watch?v=tzow5LApGMQ,SINGLES,
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Ανύπαρκτοι,https://www.youtube.com/watch?v=FQNg5DjPKtQ,Unreleased,1
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Kukuraxa - Nisi (Logout Remix),https://www.youtube.com/watch?v=uP8Z4NVFulI,SINGLES,5
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Τα Μαλλιά Της,https://www.youtube.com/watch?v=57vb9XiIXjM,SINGLES,4
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Αθήνα Είσαι Τέλεια ΙΙ,https://www.youtube.com/watch?v=XCjm8MWa1CM,τα της επιστροφής,1
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Αλγόριθμε,https://www.youtube.com/watch?v=IpLaDTOoAJk,τα της επιστροφής,2
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Όνειρο,https://www.youtube.com/watch?v=FKI4mbCGTRs,τα της επιστροφής,3
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Τσούχτρες ΙΙ,https://www.youtube.com/watch?v=XXtm5YIvKfo,τα της επιστροφής,4
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Τισέρτ,https://www.youtube.com/watch?v=RmyvTt9laHM,τα της επιστροφής,5
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Κοντρόλ,https://www.youtube.com/watch?v=PLkYuCuOIKo,τα της επιστροφής,6
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Παλιατζίδικα,https://www.youtube.com/watch?v=Y9Wf3CSAmeo,τα της επιστροφής,7
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Αγ. Ιωάννου,https://www.youtube.com/watch?v=vupUDga9Sow,τα της επιστροφής,8
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Κούκη,https://www.youtube.com/watch?v=BkSxfbW2ru8,τα της επιστροφής,9
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Τα Μωρά Μας,https://www.youtube.com/watch?v=COip0rO5PvM,τα της επιστροφής,10
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Πέμπτες,https://www.youtube.com/watch?v=P9edccuMTQc,τα της επιστροφής,11
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Καμιά Κάμερα,https://www.youtube.com/watch?v=O0c2HKrbPOg,τα της επιστροφής,12
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Amelia,https://www.youtube.com/watch?v=MgC99H1ekLg,Piano Tracks,1
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Thomas,https://www.youtube.com/watch?v=w84SRBXD3Ls,Piano Tracks,2
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Lydia,https://www.youtube.com/watch?v=WrwkDzX71eA,Piano Tracks,3
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Marjorine,https://www.youtube.com/watch?v=_0_xTwYJxCg,Piano Tracks,4
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Izzy,https://www.youtube.com/watch?v=Nw7KLDPk6RU,Piano Tracks,5
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Allen,https://www.youtube.com/watch?v=xioXw56K7mk,Piano Tracks,6
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Johan,https://www.youtube.com/watch?v=xioXw56K7mk,Piano Tracks,7
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,ΚΙΘΑΡΑ,https://www.youtube.com/watch?v=kyW_RPvOeS4,ΠΟΝΕΜΕΛΑ,1
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,ΑΔΙΑΒΡΟΧΟ,https://www.youtube.com/watch?v=ruLjwVUPioA,ΠΟΝΕΜΕΛΑ,2
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,ΗΜΕΡΟΛΟΓΙΟ,https://www.youtube.com/watch?v=5jU0EfAV3GY,ΠΟΝΕΜΕΛΑ,3
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,ΑΜΑΞΙ,https://www.youtube.com/watch?v=soh8M8oq-T4,ΠΟΝΕΜΕΛΑ,4
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,ΚΙ ΕΓΩ,https://www.youtube.com/watch?v=k4OakWeoud0,ΠΟΝΕΜΕΛΑ,5
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,ΠΥΡΕΤΟΣ,https://www.youtube.com/watch?v=x4_6t-wR-cY,ΠΟΝΕΜΕΛΑ,6
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,ΡΟΛΟΓΙΑ,https://www.youtube.com/watch?v=rlOyDhWJ4Uw,ΠΟΝΕΜΕΛΑ,7
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,ΚΥΡΙΑΚΗ FEAT. ΔΕΣΠΟΙΝΙΣ ΤΡΙΧΡΩΜΗ,https://www.youtube.com/watch?v=GuJSTln82ug,ΠΟΝΕΜΕΛΑ,8
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,15 ΑΥΓΟΥΣΤΟΥ,https://www.youtube.com/watch?v=h_uuM3Q-0fA&list=PLVtxEJB0fJBEEn2HxMpTV2BRpP-UsiwDq&index=9,ΠΟΝΕΜΕΛΑ,9
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Καταρράκτης,https://www.youtube.com/watch?v=JhESJyEzlyQ,ΕΔΩ/ΕΚΕΙ,1
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Πλατεία,https://www.youtube.com/watch?v=OTWjgFT0VfE,ΕΔΩ/ΕΚΕΙ,2
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Φίλη,https://www.youtube.com/watch?v=DvZkcvvqn-M,ΕΔΩ/ΕΚΕΙ,3
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Κύματα,https://www.youtube.com/watch?v=bDl_dcczCjY,ΕΔΩ/ΕΚΕΙ,4
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Αερικό,https://www.youtube.com/watch?v=WeqMjtf2seU,ΕΔΩ/ΕΚΕΙ,5
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Κώστας (feat. Nalyssa Green),https://www.youtube.com/watch?v=g5zyfzqngT4,ΕΔΩ/ΕΚΕΙ,6
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Γκρι (feat. Nalyssa Green),https://www.youtube.com/watch?v=u7w1PcEJ1oE,ΕΔΩ/ΕΚΕΙ,7
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Παράθυρα,https://www.youtube.com/watch?v=T4Q9oJrD8CQ,ΕΔΩ/ΕΚΕΙ,8
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Τρίτες,https://www.youtube.com/watch?v=ccDDapMgMdM,ΕΔΩ/ΕΚΕΙ,9
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Returns,https://www.youtube.com/watch?v=CiWUdSlcdYk,INSTRUMENTALS,1
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Time Wasters,https://www.youtube.com/watch?v=FZ2N29c92U8,INSTRUMENTALS,2
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Eleven Steps,https://www.youtube.com/watch?v=LSFVjHJIHa8,INSTRUMENTALS,3
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Malignant (feat. Kalliopi Mitropoulou),https://www.youtube.com/watch?v=xpNkkVTxA_I,INSTRUMENTALS,4
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Fire (feat. Kalliopi Mitropoulou),https://www.youtube.com/watch?v=UtQT-0o6x4s,INSTRUMENTALS,5
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Zbkk (feat. Kalliopi Mitropoulou),https://www.youtube.com/watch?v=4Lh5tZi6cBU,INSTRUMENTALS,6
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Park (feat. Kalliopi Mitropoulou),https://www.youtube.com/watch?v=_lsAxVYCYOg,INSTRUMENTALS,7
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Ηλιοβασίλεμα (feat. Nalyssa Green),https://www.youtube.com/watch?v=2iQ3Fv0Iqyo,SINGLES,1
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,N38°,https://www.youtube.com/watch?v=M55mn19eY-Q,N91°,1
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Who Knows,https://www.youtube.com/watch?v=mVoq_Ejd0qM,N91°,2
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,I Will Meet You There,https://www.youtube.com/watch?v=XrGFK5diZbE,N91°,3
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Love Me,https://www.youtube.com/watch?v=PBwNalmzRqU,N91°,4
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Kite Waltz,https://www.youtube.com/watch?v=8z0QkUyMnJQ,N91°,5
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,When It Was Not Too Late,https://www.youtube.com/watch?v=c_jKIZsgGlM,N91°,6
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Gone Forever,https://www.youtube.com/watch?v=BX7GRX4r0r4,N91°,7
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,In Another Life,https://www.youtube.com/watch?v=-rCMM3sn8dg,N91°,8
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Theorem,https://www.youtube.com/watch?v=LVKNHUb2HD4,N91°,9
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Accidents,https://www.youtube.com/watch?v=DV35nmNhGSk,N91°,10
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Bayorsai,https://www.youtube.com/watch?v=JOX3eciAwY4,N91°,11
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Pessoan Odyssey,https://www.youtube.com/watch?v=qm-XZoR_W2U,N91°,12
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,N91°,https://www.youtube.com/watch?v=8Xi82s5ZC80,N91°,13
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Τσούχτρες,https://www.youtube.com/watch?v=swFKwDUDPq8,SINGLES,2
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Αθήνα Είσαι Τέλεια,https://www.youtube.com/watch?v=Qzy2PWyUaTE,SINGLES,3
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Newspapers,https://www.youtube.com/watch?v=6HSGTVUSp9g,LITTLE THINGS BURIED IN CONCRETE,1
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Global Love,https://www.youtube.com/watch?v=5Z_62OsiKwo,LITTLE THINGS BURIED IN CONCRETE,2
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,As If  ,https://www.youtube.com/watch?v=KR_TZS9ihps,LITTLE THINGS BURIED IN CONCRETE,3
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,For You,https://www.youtube.com/watch?v=AUCC204nzy0,LITTLE THINGS BURIED IN CONCRETE,4
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Broken Mirror,https://www.youtube.com/watch?v=hhvR-Nan_5E,LITTLE THINGS BURIED IN CONCRETE,5
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Memory Gap,https://www.youtube.com/watch?v=GjbNYggFM-U,LITTLE THINGS BURIED IN CONCRETE,6
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Censored Title,https://www.youtube.com/watch?v=m3VVkMiffHA,LITTLE THINGS BURIED IN CONCRETE,7
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Last Prayer        ,https://www.youtube.com/watch?v=66--ObN-KjA,LITTLE THINGS BURIED IN CONCRETE,8
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Hymn to Concrete,https://www.youtube.com/watch?v=osyIkI00bes,LITTLE THINGS BURIED IN CONCRETE,9
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,"…love You, I Love you, I Love You, I… LogOut                ",https://www.youtube.com/watch?v=CI2iFjZoKQ8,LITTLE THINGS BURIED IN CONCRETE,10
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Departure,https://www.youtube.com/watch?v=lDqeq7nkl_s&t=2s,PAPER PLANE FLIGHT RECORDER,1
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Where It Goes,https://www.youtube.com/watch?v=DzQaiSA12CA,PAPER PLANE FLIGHT RECORDER,2
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Winter + Summer,https://www.youtube.com/watch?v=AWGYTjp0PMw,PAPER PLANE FLIGHT RECORDER,3
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Interlude 1 (Requiem),https://www.youtube.com/watch?v=BfLx4xt2a8I,PAPER PLANE FLIGHT RECORDER,4
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,In the Sea of Lonely Souls,https://www.youtube.com/watch?v=cm1O5DVUPUQ,PAPER PLANE FLIGHT RECORDER,5
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Elliott Days,https://www.youtube.com/watch?v=6S4KAtzxUU8,PAPER PLANE FLIGHT RECORDER,6
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Song of the Selfless,https://www.youtube.com/watch?v=5t9J7kl2cbg,PAPER PLANE FLIGHT RECORDER,7
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Interlude 2 (Paper Planes),https://www.youtube.com/watch?v=ZLIhYvCD8xo,PAPER PLANE FLIGHT RECORDER,8
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Establishment,https://www.youtube.com/watch?v=5rRTKPqfQbU,PAPER PLANE FLIGHT RECORDER,9
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,In a Sunday Morning,https://www.youtube.com/watch?v=_VGIL0F2FD0,PAPER PLANE FLIGHT RECORDER,10
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,An Inside Joke,https://www.youtube.com/watch?v=3rkoBdVrJtY,PAPER PLANE FLIGHT RECORDER,11
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Landing,https://www.youtube.com/watch?v=d-iGwVdUF8c,PAPER PLANE FLIGHT RECORDER,12
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Upside Down,https://www.youtube.com/watch?v=l9EegFwytSI,The Place Within Complete Recordings,1
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Spain,https://www.youtube.com/watch?v=ZIu23PsbMu8,The Place Within Complete Recordings,2
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Web Nationality,https://www.youtube.com/watch?v=AfJykNwBw-8,The Place Within Complete Recordings,3
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Run Away,https://www.youtube.com/watch?v=kIE7GRiuQ5o,The Place Within Complete Recordings,4
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,White Dressed Guests,https://www.youtube.com/watch?v=JDetsTyTCC4,The Place Within Complete Recordings,5
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Idkidc,https://www.youtube.com/watch?v=NizdqhSviA4,The Place Within Complete Recordings,6
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Darling,https://www.youtube.com/watch?v=g_ejx3uNzIE,The Place Within Complete Recordings,7
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Rebellion,https://www.youtube.com/watch?v=6Znn57lAstY,The Place Within Complete Recordings,8
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Perfect,https://www.youtube.com/watch?v=QTJFp-nn_nU,The Place Within Complete Recordings,9
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Ad Lag,https://www.youtube.com/watch?v=fCNv6ZU_1vU,The Place Within Complete Recordings,10
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Astonishing,https://www.youtube.com/watch?v=B84K-RuPoPQ,The Place Within Complete Recordings,11
-images/tsouxtres.jpg,audio/Τσούχτρες.mp3,Waltz of Time,https://www.youtube.com/watch?v=gUl8711PPyk,The Place Within Complete Recordings,12
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Αθήνα Είσαι Τέλεια ΙΙ,https://www.youtube.com/watch?v=XCjm8MWa1CM,τα της επιστροφής,1
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Αλγόριθμε,https://www.youtube.com/watch?v=IpLaDTOoAJk,τα της επιστροφής,2
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Όνειρο,https://www.youtube.com/watch?v=FKI4mbCGTRs,τα της επιστροφής,3
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Τσούχτρες ΙΙ,https://www.youtube.com/watch?v=XXtm5YIvKfo,τα της επιστροφής,4
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Τισέρτ,https://www.youtube.com/watch?v=RmyvTt9laHM,τα της επιστροφής,5
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Κοντρόλ,https://www.youtube.com/watch?v=PLkYuCuOIKo,τα της επιστροφής,6
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Παλιατζίδικα,https://www.youtube.com/watch?v=Y9Wf3CSAmeo,τα της επιστροφής,7
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Αγ. Ιωάννου,https://www.youtube.com/watch?v=vupUDga9Sow,τα της επιστροφής,8
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Κούκη,https://www.youtube.com/watch?v=BkSxfbW2ru8,τα της επιστροφής,9
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Τα Μωρά Μας,https://www.youtube.com/watch?v=COip0rO5PvM,τα της επιστροφής,10
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Πέμπτες,https://www.youtube.com/watch?v=P9edccuMTQc,τα της επιστροφής,11
+images/epistrofi.JPG,audio/Τσούχτρες.mp3,Καμιά Κάμερα,https://www.youtube.com/watch?v=O0c2HKrbPOg,τα της επιστροφής,12
+images/piano.jpg,audio/Τσούχτρες.mp3,Amelia,https://www.youtube.com/watch?v=MgC99H1ekLg,Piano Tracks,1
+images/piano.jpg,audio/Τσούχτρες.mp3,Thomas,https://www.youtube.com/watch?v=w84SRBXD3Ls,Piano Tracks,2
+images/piano.jpg,audio/Τσούχτρες.mp3,Lydia,https://www.youtube.com/watch?v=WrwkDzX71eA,Piano Tracks,3
+images/piano.jpg,audio/Τσούχτρες.mp3,Marjorine,https://www.youtube.com/watch?v=_0_xTwYJxCg,Piano Tracks,4
+images/piano.jpg,audio/Τσούχτρες.mp3,Izzy,https://www.youtube.com/watch?v=Nw7KLDPk6RU,Piano Tracks,5
+images/piano.jpg,audio/Τσούχτρες.mp3,Allen,https://www.youtube.com/watch?v=xioXw56K7mk,Piano Tracks,6
+images/piano.jpg,audio/Τσούχτρες.mp3,Johan,https://www.youtube.com/watch?v=xioXw56K7mk,Piano Tracks,7
+images/sunburns.JPG,audio/Τσούχτρες.mp6,Sunburns,https://www.youtube.com/watch?v=hUGBp4_7WpI,Unreleased,
+images/ponemela.jpg,audio/Τσούχτρες.mp3,ΚΙΘΑΡΑ,https://www.youtube.com/watch?v=kyW_RPvOeS4,ΠΟΝΕΜΕΛΑ,1
+images/ponemela.jpg,audio/Τσούχτρες.mp3,ΑΔΙΑΒΡΟΧΟ,https://www.youtube.com/watch?v=ruLjwVUPioA,ΠΟΝΕΜΕΛΑ,2
+images/ponemela.jpg,audio/Τσούχτρες.mp3,ΗΜΕΡΟΛΟΓΙΟ,https://www.youtube.com/watch?v=5jU0EfAV3GY,ΠΟΝΕΜΕΛΑ,3
+images/ponemela.jpg,audio/Τσούχτρες.mp3,ΑΜΑΞΙ,https://www.youtube.com/watch?v=soh8M8oq-T4,ΠΟΝΕΜΕΛΑ,4
+images/ponemela.jpg,audio/Τσούχτρες.mp3,ΚΙ ΕΓΩ,https://www.youtube.com/watch?v=k4OakWeoud0,ΠΟΝΕΜΕΛΑ,5
+images/ponemela.jpg,audio/Τσούχτρες.mp3,ΠΥΡΕΤΟΣ,https://www.youtube.com/watch?v=x4_6t-wR-cY,ΠΟΝΕΜΕΛΑ,6
+images/ponemela.jpg,audio/Τσούχτρες.mp3,ΡΟΛΟΓΙΑ,https://www.youtube.com/watch?v=rlOyDhWJ4Uw,ΠΟΝΕΜΕΛΑ,7
+images/ponemela.jpg,audio/Τσούχτρες.mp3,ΚΥΡΙΑΚΗ FEAT. ΔΕΣΠΟΙΝΙΣ ΤΡΙΧΡΩΜΗ,https://www.youtube.com/watch?v=GuJSTln82ug,ΠΟΝΕΜΕΛΑ,8
+images/ponemela.jpg,audio/Τσούχτρες.mp3,15 ΑΥΓΟΥΣΤΟΥ,https://www.youtube.com/watch?v=h_uuM3Q-0fA&list=PLVtxEJB0fJBEEn2HxMpTV2BRpP-UsiwDq&index=9,ΠΟΝΕΜΕΛΑ,9
+images/ee.jpg,audio/Τσούχτρες.mp3,Καταρράκτης,https://www.youtube.com/watch?v=JhESJyEzlyQ,ΕΔΩ/ΕΚΕΙ,1
+images/ee.jpg,audio/Τσούχτρες.mp3,Πλατεία,https://www.youtube.com/watch?v=OTWjgFT0VfE,ΕΔΩ/ΕΚΕΙ,2
+images/ee.jpg,audio/Τσούχτρες.mp3,Φίλη,https://www.youtube.com/watch?v=DvZkcvvqn-M,ΕΔΩ/ΕΚΕΙ,3
+images/ee.jpg,audio/Τσούχτρες.mp3,Κύματα,https://www.youtube.com/watch?v=bDl_dcczCjY,ΕΔΩ/ΕΚΕΙ,4
+images/ee.jpg,audio/Τσούχτρες.mp3,Αερικό,https://www.youtube.com/watch?v=WeqMjtf2seU,ΕΔΩ/ΕΚΕΙ,5
+images/ee.jpg,audio/Τσούχτρες.mp3,Κώστας (feat. Nalyssa Green),https://www.youtube.com/watch?v=g5zyfzqngT4,ΕΔΩ/ΕΚΕΙ,6
+images/ee.jpg,audio/Τσούχτρες.mp3,Γκρι (feat. Nalyssa Green),https://www.youtube.com/watch?v=u7w1PcEJ1oE,ΕΔΩ/ΕΚΕΙ,7
+images/ee.jpg,audio/Τσούχτρες.mp3,Παράθυρα,https://www.youtube.com/watch?v=T4Q9oJrD8CQ,ΕΔΩ/ΕΚΕΙ,8
+images/ee.jpg,audio/Τσούχτρες.mp3,Τρίτες,https://www.youtube.com/watch?v=ccDDapMgMdM,ΕΔΩ/ΕΚΕΙ,9
+images/instr.jpg,audio/Τσούχτρες.mp3,Returns,https://www.youtube.com/watch?v=CiWUdSlcdYk,INSTRUMENTALS,1
+images/instr.jpg,audio/Τσούχτρες.mp3,Time Wasters,https://www.youtube.com/watch?v=FZ2N29c92U8,INSTRUMENTALS,2
+images/instr.jpg,audio/Τσούχτρες.mp3,Eleven Steps,https://www.youtube.com/watch?v=LSFVjHJIHa8,INSTRUMENTALS,3
+images/instr.jpg,audio/Τσούχτρες.mp3,Malignant (feat. Kalliopi Mitropoulou),https://www.youtube.com/watch?v=xpNkkVTxA_I,INSTRUMENTALS,4
+images/instr.jpg,audio/Τσούχτρες.mp3,Fire (feat. Kalliopi Mitropoulou),https://www.youtube.com/watch?v=UtQT-0o6x4s,INSTRUMENTALS,5
+images/instr.jpg,audio/Τσούχτρες.mp3,Zbkk (feat. Kalliopi Mitropoulou),https://www.youtube.com/watch?v=4Lh5tZi6cBU,INSTRUMENTALS,6
+images/instr.jpg,audio/Τσούχτρες.mp3,Park (feat. Kalliopi Mitropoulou),https://www.youtube.com/watch?v=_lsAxVYCYOg,INSTRUMENTALS,7
+images/n91.jpg,audio/Τσούχτρες.mp3,N38°,https://www.youtube.com/watch?v=M55mn19eY-Q,N91°,1
+images/n91.jpg,audio/Τσούχτρες.mp3,Who Knows,https://www.youtube.com/watch?v=mVoq_Ejd0qM,N91°,2
+images/n91.jpg,audio/Τσούχτρες.mp3,I Will Meet You There,https://www.youtube.com/watch?v=XrGFK5diZbE,N91°,3
+images/n91.jpg,audio/Τσούχτρες.mp3,Love Me,https://www.youtube.com/watch?v=PBwNalmzRqU,N91°,4
+images/n91.jpg,audio/Τσούχτρες.mp3,Kite Waltz,https://www.youtube.com/watch?v=8z0QkUyMnJQ,N91°,5
+images/n91.jpg,audio/Τσούχτρες.mp3,When It Was Not Too Late,https://www.youtube.com/watch?v=c_jKIZsgGlM,N91°,6
+images/n91.jpg,audio/Τσούχτρες.mp3,Gone Forever,https://www.youtube.com/watch?v=BX7GRX4r0r4,N91°,7
+images/n91.jpg,audio/Τσούχτρες.mp3,In Another Life,https://www.youtube.com/watch?v=-rCMM3sn8dg,N91°,8
+images/n91.jpg,audio/Τσούχτρες.mp3,Theorem,https://www.youtube.com/watch?v=LVKNHUb2HD4,N91°,9
+images/n91.jpg,audio/Τσούχτρες.mp3,Accidents,https://www.youtube.com/watch?v=DV35nmNhGSk,N91°,10
+images/n91.jpg,audio/Τσούχτρες.mp3,Bayorsai,https://www.youtube.com/watch?v=JOX3eciAwY4,N91°,11
+images/n91.jpg,audio/Τσούχτρες.mp3,Pessoan Odyssey,https://www.youtube.com/watch?v=qm-XZoR_W2U,N91°,12
+images/n91.jpg,audio/Τσούχτρες.mp3,N91°,https://www.youtube.com/watch?v=8Xi82s5ZC80,N91°,13
+images/little.jpg,audio/Τσούχτρες.mp3,Newspapers,https://www.youtube.com/watch?v=6HSGTVUSp9g,LITTLE THINGS BURIED IN CONCRETE,1
+images/little.jpg,audio/Τσούχτρες.mp3,Global Love,https://www.youtube.com/watch?v=5Z_62OsiKwo,LITTLE THINGS BURIED IN CONCRETE,2
+images/little.jpg,audio/Τσούχτρες.mp3,As If  ,https://www.youtube.com/watch?v=KR_TZS9ihps,LITTLE THINGS BURIED IN CONCRETE,3
+images/little.jpg,audio/Τσούχτρες.mp3,For You,https://www.youtube.com/watch?v=AUCC204nzy0,LITTLE THINGS BURIED IN CONCRETE,4
+images/little.jpg,audio/Τσούχτρες.mp3,Broken Mirror,https://www.youtube.com/watch?v=hhvR-Nan_5E,LITTLE THINGS BURIED IN CONCRETE,5
+images/little.jpg,audio/Τσούχτρες.mp3,Memory Gap,https://www.youtube.com/watch?v=GjbNYggFM-U,LITTLE THINGS BURIED IN CONCRETE,6
+images/little.jpg,audio/Τσούχτρες.mp3,Censored Title,https://www.youtube.com/watch?v=m3VVkMiffHA,LITTLE THINGS BURIED IN CONCRETE,7
+images/little.jpg,audio/Τσούχτρες.mp3,Last Prayer        ,https://www.youtube.com/watch?v=66--ObN-KjA,LITTLE THINGS BURIED IN CONCRETE,8
+images/little.jpg,audio/Τσούχτρες.mp3,Hymn to Concrete,https://www.youtube.com/watch?v=osyIkI00bes,LITTLE THINGS BURIED IN CONCRETE,9
+images/little.jpg,audio/Τσούχτρες.mp3,"…love You, I Love you, I Love You, I… LogOut                ",https://www.youtube.com/watch?v=CI2iFjZoKQ8,LITTLE THINGS BURIED IN CONCRETE,10
+images/paper.jpg,audio/Τσούχτρες.mp3,Departure,https://www.youtube.com/watch?v=lDqeq7nkl_s&t=2s,PAPER PLANE FLIGHT RECORDER,1
+images/paper.jpg,audio/Τσούχτρες.mp3,Where It Goes,https://www.youtube.com/watch?v=DzQaiSA12CA,PAPER PLANE FLIGHT RECORDER,2
+images/paper.jpg,audio/Τσούχτρες.mp3,Winter + Summer,https://www.youtube.com/watch?v=AWGYTjp0PMw,PAPER PLANE FLIGHT RECORDER,3
+images/paper.jpg,audio/Τσούχτρες.mp3,Interlude 1 (Requiem),https://www.youtube.com/watch?v=BfLx4xt2a8I,PAPER PLANE FLIGHT RECORDER,4
+images/paper.jpg,audio/Τσούχτρες.mp3,In the Sea of Lonely Souls,https://www.youtube.com/watch?v=cm1O5DVUPUQ,PAPER PLANE FLIGHT RECORDER,5
+images/paper.jpg,audio/Τσούχτρες.mp3,Elliott Days,https://www.youtube.com/watch?v=6S4KAtzxUU8,PAPER PLANE FLIGHT RECORDER,6
+images/paper.jpg,audio/Τσούχτρες.mp3,Song of the Selfless,https://www.youtube.com/watch?v=5t9J7kl2cbg,PAPER PLANE FLIGHT RECORDER,7
+images/paper.jpg,audio/Τσούχτρες.mp3,Interlude 2 (Paper Planes),https://www.youtube.com/watch?v=ZLIhYvCD8xo,PAPER PLANE FLIGHT RECORDER,8
+images/paper.jpg,audio/Τσούχτρες.mp3,Establishment,https://www.youtube.com/watch?v=5rRTKPqfQbU,PAPER PLANE FLIGHT RECORDER,9
+images/paper.jpg,audio/Τσούχτρες.mp3,In a Sunday Morning,https://www.youtube.com/watch?v=_VGIL0F2FD0,PAPER PLANE FLIGHT RECORDER,10
+images/paper.jpg,audio/Τσούχτρες.mp3,An Inside Joke,https://www.youtube.com/watch?v=3rkoBdVrJtY,PAPER PLANE FLIGHT RECORDER,11
+images/paper.jpg,audio/Τσούχτρες.mp3,Landing,https://www.youtube.com/watch?v=d-iGwVdUF8c,PAPER PLANE FLIGHT RECORDER,12
+images/tpw.jpg,audio/Τσούχτρες.mp3,Upside Down,https://www.youtube.com/watch?v=l9EegFwytSI,The Place Within Complete Recordings,1
+images/tpw.jpg,audio/Τσούχτρες.mp3,Spain,https://www.youtube.com/watch?v=ZIu23PsbMu8,The Place Within Complete Recordings,2
+images/tpw.jpg,audio/Τσούχτρες.mp3,Web Nationality,https://www.youtube.com/watch?v=AfJykNwBw-8,The Place Within Complete Recordings,3
+images/tpw.jpg,audio/Τσούχτρες.mp3,Run Away,https://www.youtube.com/watch?v=kIE7GRiuQ5o,The Place Within Complete Recordings,4
+images/tpw.jpg,audio/Τσούχτρες.mp3,White Dressed Guests,https://www.youtube.com/watch?v=JDetsTyTCC4,The Place Within Complete Recordings,5
+images/tpw.jpg,audio/Τσούχτρες.mp3,Idkidc,https://www.youtube.com/watch?v=NizdqhSviA4,The Place Within Complete Recordings,6
+images/tpw.jpg,audio/Τσούχτρες.mp3,Darling,https://www.youtube.com/watch?v=g_ejx3uNzIE,The Place Within Complete Recordings,7
+images/tpw.jpg,audio/Τσούχτρες.mp3,Rebellion,https://www.youtube.com/watch?v=6Znn57lAstY,The Place Within Complete Recordings,8
+images/tpw.jpg,audio/Τσούχτρες.mp3,Perfect,https://www.youtube.com/watch?v=QTJFp-nn_nU,The Place Within Complete Recordings,9
+images/tpw.jpg,audio/Τσούχτρες.mp3,Ad Lag,https://www.youtube.com/watch?v=fCNv6ZU_1vU,The Place Within Complete Recordings,10
+images/tpw.jpg,audio/Τσούχτρες.mp3,Astonishing,https://www.youtube.com/watch?v=B84K-RuPoPQ,The Place Within Complete Recordings,11
+images/tpw.jpg,audio/Τσούχτρες.mp3,Waltz of Time,https://www.youtube.com/watch?v=gUl8711PPyk,The Place Within Complete Recordings,12

@@ -240,7 +240,7 @@ function renderVerticalTracks(tracks) {
     }
     
     // Find max track count to standardize column height
-    const MAX_TRACKS_PER_ALBUM = 13; // Fixed height for all columns
+    const MAX_TRACKS_PER_ALBUM = 16; // Fixed height for all columns
     
     // Create a column for each album
     albumOrder.forEach(albumName => {
