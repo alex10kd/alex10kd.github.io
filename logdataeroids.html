@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataeroids</title>
+    <style>
+        /* Basic Reset & Body Style */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #050510; /* Dark cyberspace blue/black */
+            color: #0f0; /* Green text like old terminals */
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column; /* Stack canvas above UI potentially */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Prevent scrollbars */
+        }
+
+        /* Game Canvas */
+        #gameCanvas {
+            border: 2px solid #0f0; /* Green border */
+            background-color: #0a0a1f; /* Slightly lighter than body */
+            display: block; /* Prevents extra space below canvas */
+        }
+
+        /* Matrix Background */
+        canvas#matrixCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1; /* Behind game canvas */
+            width: 100%;
+            height: 100%;
+        }
+
+        /* UI Elements Container */
+        #uiContainer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none; /* Allow clicks to go through to canvas if needed */
+            color: #0f0;
+            text-shadow: 0 0 5px #0f0;
+            font-size: 1.2em;
+        }
+
+        /* Score Display */
+        #scoreDisplay {
+            /* Basic styling already covered by uiContainer */
+        }
+
+        /* Uniqueness (Health) Bar */
+        #uniquenessContainer {
+            width: 200px;
+            height: 20px;
+            border: 1px solid #f00; /* Red border for danger */
+            background-color: #300; /* Dark red background */
+            overflow: hidden; /* Hide overflow of the inner bar */
+        }
+
+        #uniquenessBar {
+            height: 100%;
+            width: 0%; /* Start empty (low uniqueness) */
+            background-color: #f00; /* Bright red fill */
+            transition: width 0.2s linear; /* Smooth transition */
+            box-shadow: 0 0 5px #f00;
+        }
+
+        /* YouTube Player */
+        #youtubePlayer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 200px;
+            height: 120px;
+            z-index: 5;
+            opacity: 0.8;
+            display: none;
+        }
+
+        /* Game State Screens (Start, Game Over) */
+        .gameScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* Dark overlay */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #0f0;
+            z-index: 10; /* Ensure they are on top */
+        }
+
+        .gameScreen h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        .gameScreen p {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .gameScreen strong { /* For controls hint */
+            color: #ff0; /* Yellow highlight */
+        }
+
+        /* Initially hide screens */
+        #startScreen { display: flex; /* Show start screen initially */ }
+        #gameOverScreen { display: none; }
+
+    </style>
+</head>
+<body>
+    <!-- Matrix Background Canvas -->
+    <canvas id="matrixCanvas"></canvas>
+
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <!-- UI Elements -->
+    <div id="uiContainer">
+        <div id="scoreDisplay">Score: 0</div>
+        <div id="uniquenessContainer">
+            <div id="uniquenessBar"></div>
+            <!-- Text maybe? <span id="uniquenessLabel">Uniqueness: 0%</span> -->
+        </div>
+        <!-- TODO: Add indicators for weapon cooldowns/ammo? -->
+    </div>
+
+    <!-- Game State Screens -->
+    <div id="startScreen" class="gameScreen">
+        <h1>DATAEROIDS</h1>
+        <p>User alex10kd0, your browser is under attack by trackers!</p>
+        <p>Use <strong>ARROW KEYS</strong> to move your Logout button, <strong>SPACE</strong> to fire Privacy Shield.</p>
+        <p>Avoid trackers from social media and your personal data leaks to keep your Fingerprint Uniqueness low.</p>
+        <p>Last login: 2025-05-13 07:52:04</p>
+        <p>Press <strong>ENTER</strong> to start.</p>
+    </div>
+
+    <div id="gameOverScreen" class="gameScreen">
+        <h1>CONNECTION LOST</h1>
+        <p>User alex10kd0, your fingerprint is too unique. You've been profiled!</p>
+        <p id="finalScore">Final Score: 0</p>
+        <p>Session ended: 2025-05-13 07:52:04</p>
+        <p>Press <strong>ENTER</strong> to try again.</p>
+    </div>
+
+    <!-- YouTube Player -->
+    <div id="youtubePlayer">
+        <iframe width="200" height="120" src="https://www.youtube.com/embed/IpLaDTOoAJk?autoplay=1&loop=1&playlist=IpLaDTOoAJk&mute=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        // --- Canvas & Context Setup ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 800; // Or window.innerWidth * 0.8;
+        canvas.height = 600; // Or window.innerHeight * 0.8;
+
+        // --- UI Elements ---
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const uniquenessBar = document.getElementById('uniquenessBar');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScoreDisplay = document.getElementById('finalScore');
+
+        // --- Game Constants ---
+        const SHIP_SIZE = 20; // Radius
+        const TURN_SPEED = 0.05; // Radians per frame
+        const THRUST_POWER = 0.1;
+        const FRICTION = 0.99; // Slowdown factor
+        const BULLET_SPEED = 5;
+        const MAX_BULLETS = 5;
+        const ENEMY_SPAWN_RATE = 100; // Lower is faster (frames)
+        const MAX_UNIQUENESS = 100;
+        const UNIQUENESS_PER_HIT = 10; // How much uniqueness increases per tracker hit
+
+        // --- Game State ---
+        let score = 0;
+        let uniqueness = 0;
+        let ship;
+        let bullets = [];
+        let enemies = [];
+        let keys = {}; // Tracks pressed keys
+        let frameCount = 0;
+        let isPlaying = false;
+        let isGameOver = false;
+        let gameLoopId; // To store requestAnimationFrame ID
+
+        // --- Classes / Object Blueprints ---
+
+        class Ship {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = SHIP_SIZE;
+                this.angle = -Math.PI / 2; // Pointing up
+                this.velocity = { x: 0, y: 0 };
+                this.isThrusting = false;
+                this.color = '#0ff'; // Cyan ship
+            }
+
+            rotate(dir) { // dir = 1 for right, -1 for left
+                this.angle += TURN_SPEED * dir;
+            }
+
+            thrust(backward = false) {
+                const multiplier = backward ? -0.7 : 1; // Reverse is 70% as powerful
+                this.velocity.x += Math.cos(this.angle) * THRUST_POWER * multiplier;
+                this.velocity.y += Math.sin(this.angle) * THRUST_POWER * multiplier;
+                this.isThrusting = true;
+            }
+
+            shoot() {
+                if (bullets.length < MAX_BULLETS) {
+                    const bullet = new Bullet(
+                        this.x + Math.cos(this.angle) * this.radius,
+                        this.y + Math.sin(this.angle) * this.radius,
+                        this.angle
+                    );
+                    bullets.push(bullet);
+                    // TODO: Play shoot sound
+                }
+            }
+
+            update() {
+                // Apply friction
+                this.velocity.x *= FRICTION;
+                this.velocity.y *= FRICTION;
+
+                // Move ship
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+
+                // Screen wrapping
+                if (this.x < -this.radius) this.x = canvas.width + this.radius;
+                if (this.x > canvas.width + this.radius) this.x = -this.radius;
+                if (this.y < -this.radius) this.y = canvas.height + this.radius;
+                if (this.y > canvas.height + this.radius) this.y = -this.radius;
+
+                this.isThrusting = false; // Reset thrust visual for next frame
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                
+                // Draw Logout Button/Icon
+                ctx.beginPath();
+                // Main circle
+                ctx.arc(0, 0, this.radius * 0.8, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(200, 0, 0, 0.7)";
+                ctx.fill();
+                ctx.strokeStyle = "#fff";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Draw emoji instead of "L"
+                ctx.font = "18px Arial";
+                ctx.fillStyle = "#fff";
+                ctx.textAlign = "center";
+                ctx.fillText("ο-:", 0, 6);
+                
+                // Draw direction indicator (arrow pointing forward)
+                ctx.beginPath();
+                ctx.moveTo(this.radius * 0.8, 0); // Front point
+                ctx.lineTo(this.radius * 0.5, -this.radius * 0.3); // Top wing
+                ctx.lineTo(this.radius * 0.5, this.radius * 0.3); // Bottom wing
+                ctx.closePath();
+                ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+                ctx.fill();
+                
+                // Draw thrust flame if thrusting
+                if (this.isThrusting) {
+                    ctx.beginPath();
+                    ctx.moveTo(-this.radius * 0.8, 0);
+                    ctx.lineTo(-this.radius * 1.8, 0);
+                    ctx.strokeStyle = '#f90'; // Orange flame
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            }
+        }
+
+        class Bullet {
+            constructor(x, y, angle) {
+                this.x = x;
+                this.y = y;
+                this.radius = 3;
+                this.velocity = {
+                    x: Math.cos(angle) * BULLET_SPEED,
+                    y: Math.sin(angle) * BULLET_SPEED
+                };
+                this.color = '#fff'; // White bullet
+            }
+
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            isOffScreen() {
+                return this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height;
+            }
+        }
+
+        class Enemy {
+            constructor(x, y, type = null) {
+                this.x = x;
+                this.y = y;
+                
+                // Randomly choose type if not specified
+                this.type = type || this.getRandomType();
+                
+                // Generate personal data text if needed
+                if (this.type.startsWith('data_')) {
+                    this.dataText = this.generatePersonalData(this.type);
+                }
+                
+                // Properties based on type
+                switch (this.type) {
+                    case 'facebook':
+                        this.radius = 20;
+                        this.speed = Math.random() * 1 + 0.5;
+                        this.color = '#3b5998'; // Facebook blue
+                        this.health = 2;
+                        this.points = 20;
+                        break;
+                    case 'google':
+                        this.radius = 18;
+                        this.speed = Math.random() * 1.2 + 0.7;
+                        this.color = '#4285F4'; // Google blue
+                        this.health = 2;
+                        this.points = 25;
+                        break;
+                    case 'instagram':
+                        this.radius = 15;
+                        this.speed = Math.random() * 1.3 + 0.8;
+                        this.color = '#C13584'; // Instagram purple/pink
+                        this.health = 1;
+                        this.points = 15;
+                        break;
+                    case 'twitter':
+                        this.radius = 15;
+                        this.speed = Math.random() * 1.5 + 1;
+                        this.color = '#1DA1F2'; // Twitter blue
+                        this.health = 1;
+                        this.points = 15;
+                        break;
+                    case 'data_location':
+                        this.radius = 25;
+                        this.speed = Math.random() * 1.8 + 1.2; // Faster
+                        this.color = '#ff4500'; // Orange-red
+                        this.health = 1;
+                        this.points = 30;
+                        break;
+                    case 'data_ip':
+                        this.radius = 22;
+                        this.speed = Math.random() * 1.4 + 0.9;
+                        this.color = '#9932CC'; // Dark orchid
+                        this.health = 1;
+                        this.points = 25;
+                        break;
+                    case 'data_device':
+                        this.radius = 28;
+                        this.speed = Math.random() * 1.3 + 0.8;
+                        this.color = '#2E8B57'; // Sea green
+                        this.health = 1;
+                        this.points = 20;
+                        break;
+                    case 'cookie':
+                    default:
+                        this.radius = Math.random() * 10 + 10; // Size 10-20
+                        this.speed = Math.random() * 1 + 0.5; // Speed 0.5-1.5
+                        this.color = '#f90'; // Orange/Brown
+                        this.health = 1;
+                        this.points = 10;
+                        break;
+                }
+                
+                // Initial velocity towards center (or random)
+                const angle = Math.atan2(canvas.height / 2 - this.y, canvas.width / 2 - this.x);
+                this.velocity = {
+                    x: Math.cos(angle) * this.speed,
+                    y: Math.sin(angle) * this.speed
+                };
+            }
+
+            getRandomType() {
+                const gameMinutes = Math.floor(frameCount / 3600); // Approx time in minutes
+                
+                // More data trackers appear as game progresses
+                let types = ['facebook', 'google', 'instagram', 'twitter', 'cookie'];
+                
+                // After 30 seconds, add personal data trackers
+                if (frameCount > 1800) {
+                    types = types.concat(['data_location', 'data_ip', 'data_device']);
+                }
+                
+                return types[Math.floor(Math.random() * types.length)];
+            }
+            
+            generatePersonalData(type) {
+                switch(type) {
+                    case 'data_location':
+                        return `Located in ${browserData.location}`;
+                    case 'data_ip':
+                        return `IP: ${browserData.ip}`;
+                    case 'data_device':
+                        return `Using ${browserData.device}`;
+                    default:
+                        return "";
+                }
+            }
+
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                
+                // Special behavior for location - tries to "home in" on player
+                if (this.type === 'data_location' && frameCount % 30 === 0 && ship) {
+                    const angle = Math.atan2(ship.y - this.y, ship.x - this.x);
+                    this.velocity.x = Math.cos(angle) * this.speed;
+                    this.velocity.y = Math.sin(angle) * this.speed;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                
+                // Base circle for all types
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.strokeStyle = "#fff";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                
+                if (this.type.startsWith('data_')) {
+                    // Draw personal data text
+                    ctx.font = "10px Arial";
+                    ctx.fillStyle = "#fff";
+                    ctx.textAlign = "center";
+                    ctx.fillText(this.dataText, 0, 4);
+                } else {
+                    // Draw specific icon/logo based on type
+                    ctx.fillStyle = "#fff";
+                    ctx.strokeStyle = "#fff";
+                    ctx.lineWidth = 1.5;
+                    
+                    switch (this.type) {
+                        case 'facebook':
+                            // Better 'f' logo
+                            ctx.font = `bold ${this.radius}px Arial`;
+                            ctx.textAlign = "center";
+                            ctx.fillText("f", 0, this.radius/3);
+                            break;
+                        case 'google':
+                            // Better 'G' logo with colors
+                            ctx.font = `bold ${this.radius}px Arial`;
+                            ctx.textAlign = "center";
+                            ctx.fillText("G", 0, this.radius/3);
+                            
+                            // Add colorful dots
+                            const colors = ['#4285F4', '#EA4335', '#FBBC05', '#34A853'];
+                            for (let i = 0; i < 4; i++) {
+                                const angle = (i * Math.PI / 2) + Math.PI/4;
+                                const x = Math.cos(angle) * (this.radius * 0.7);
+                                const y = Math.sin(angle) * (this.radius * 0.7);
+                                ctx.beginPath();
+                                ctx.arc(x, y, this.radius/6, 0, Math.PI * 2);
+                                ctx.fillStyle = colors[i];
+                                ctx.fill();
+                            }
+                            break;
+                        case 'instagram':
+                            // Better Instagram camera icon
+                            ctx.strokeRect(-this.radius*0.6, -this.radius*0.6, this.radius*1.2, this.radius*1.2);
+                            ctx.beginPath();
+                            ctx.arc(0, 0, this.radius*0.4, 0, Math.PI * 2);
+                            ctx.stroke();
+                            
+                            // Flash dot
+                            ctx.beginPath();
+                            ctx.arc(this.radius*0.5, -this.radius*0.5, this.radius*0.15, 0, Math.PI * 2);
+                            ctx.fillStyle = "#fff";
+                            ctx.fill();
+                            break;
+                        case 'twitter':
+                            // Better Twitter bird symbol
+                            ctx.font = `bold ${this.radius*1.2}px Arial`;
+                            ctx.fillText("t", 0, this.radius/2);
+                            
+                            // Wing lines
+                            ctx.beginPath();
+                            ctx.moveTo(-this.radius*0.5, -this.radius*0.2);
+                            ctx.lineTo(this.radius*0.3, -this.radius*0.5);
+                            ctx.stroke();
+                            
+                            ctx.beginPath();
+                            ctx.moveTo(-this.radius*0.3, 0);
+                            ctx.lineTo(this.radius*0.5, -this.radius*0.3);
+                            ctx.stroke();
+                            break;
+                        case 'cookie':
+                            // Cookie icon with chips
+                            ctx.fillStyle = "#8B4513"; // Darker brown inside
+                            ctx.beginPath();
+                            ctx.arc(0, 0, this.radius*0.7, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            // Chocolate chips
+                            ctx.fillStyle = "#1a1a1a";
+                            for (let i = 0; i < 5; i++) {
+                                const angle = (i * Math.PI * 2 / 5) + frameCount/100;
+                                const distance = this.radius * 0.4;
+                                const x = Math.cos(angle) * distance;
+                                const y = Math.sin(angle) * distance;
+                                ctx.beginPath();
+                                ctx.arc(x, y, this.radius/5, 0, Math.PI * 2);
+                                ctx.fill();
+                            }
+                            break;
+                    }
+                }
+                
+                ctx.restore();
+            }
+
+            isOffScreen() { // Check if way off screen for cleanup
+                const margin = 50;
+                return this.x < -margin || this.x > canvas.width + margin ||
+                       this.y < -margin || this.y > canvas.height + margin;
+            }
+        }
+
+        // --- Helper Functions ---
+
+        function spawnEnemy() {
+            let x, y;
+            // Choose edge: 0=top, 1=right, 2=bottom, 3=left
+            const edge = Math.floor(Math.random() * 4);
+            if (edge === 0) { // Top
+                x = Math.random() * canvas.width;
+                y = -30; // Start off-screen
+            } else if (edge === 1) { // Right
+                x = canvas.width + 30;
+                y = Math.random() * canvas.height;
+            } else if (edge === 2) { // Bottom
+                x = Math.random() * canvas.width;
+                y = canvas.height + 30;
+            } else { // Left
+                x = -30;
+                y = Math.random() * canvas.height;
+            }
+
+            enemies.push(new Enemy(x, y));
+        }
+
+        function distance(x1, y1, x2, y2) {
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function checkCollisions() {
+            // Bullets vs Enemies
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    const bullet = bullets[i];
+                    const enemy = enemies[j];
+                    const dist = distance(bullet.x, bullet.y, enemy.x, enemy.y);
+
+                    if (dist < bullet.radius + enemy.radius) {
+                        // Hit!
+                        bullets.splice(i, 1); // Remove bullet
+                        enemy.health--;
+
+                        if (enemy.health <= 0) {
+                            // TODO: Add explosion effect?
+                            // TODO: Implement splitting for WebRTC leaks
+                            score += enemy.points;
+                            enemies.splice(j, 1); // Remove enemy
+                        }
+                        break; // Bullet hit an enemy, move to next bullet
+                    }
+                }
+            }
+
+            // Ship vs Enemies
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                 const enemy = enemies[i];
+                 const dist = distance(ship.x, ship.y, enemy.x, enemy.y);
+
+                 if (dist < ship.radius + enemy.radius) {
+                    // Player hit!
+                     enemies.splice(i, 1); // Remove enemy on collision
+                     uniqueness += UNIQUENESS_PER_HIT;
+                     // TODO: Play hit sound / visual feedback
+                     if (uniqueness >= MAX_UNIQUENESS) {
+                         triggerGameOver();
+                     }
+                 }
+            }
+        }
+
+        function updateUI() {
+            scoreDisplay.textContent = `Score: ${score}`;
+            const uniquenessPercent = Math.min(100, (uniqueness / MAX_UNIQUENESS) * 100);
+            uniquenessBar.style.width = `${uniquenessPercent}%`;
+        }
+
+        function handleInput() {
+            if (keys['arrowleft']) ship.rotate(-1);
+            if (keys['arrowright']) ship.rotate(1);
+            if (keys['arrowup']) ship.thrust(false); // Forward
+            if (keys['arrowdown']) ship.thrust(true); // Backward
+            // Spacebar check handled in keydown for single shot
+        }
+
+        function resetGame() {
+            score = 0;
+            uniqueness = 0;
+            ship = new Ship(canvas.width / 2, canvas.height / 2);
+            bullets = [];
+            enemies = [];
+            frameCount = 0;
+            isGameOver = false;
+            isPlaying = true;
+            gameOverScreen.style.display = 'none';
+            startScreen.style.display = 'none';
+            
+            // Show YouTube player when game starts
+            document.getElementById('youtubePlayer').style.display = 'block';
+            
+            updateUI(); // Reset UI display
+            // Ensure game loop is running if stopped
+            if(!gameLoopId) {
+                 gameLoop();
+            }
+        }
+
+        function triggerGameOver() {
+            isGameOver = true;
+            isPlaying = false;
+            finalScoreDisplay.textContent = `Final Score: ${score}`;
+            gameOverScreen.style.display = 'flex';
+            // Hide YouTube when game ends
+            document.getElementById('youtubePlayer').style.display = 'none';
+            // Optional: Stop the game loop? Or let it run showing the game over screen?
+            // cancelAnimationFrame(gameLoopId);
+            // gameLoopId = null;
+            // TODO: Play game over sound
+        }
+
+        // --- Browser Data Detection ---
+        const browserData = {
+            ip: "192.168." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255),
+            location: "Unknown Location",
+            device: "Unknown Device"
+        };
+
+        // Detect browser and platform
+        function detectBrowserInfo() {
+            const ua = navigator.userAgent;
+            
+            // Detect device
+            if (/Windows/.test(ua)) {
+                browserData.device = "Windows PC";
+            } else if (/Macintosh|MacIntel|MacPPC|Mac68K/.test(ua)) {
+                browserData.device = "MacBook";
+            } else if (/iPhone|iPad|iPod/.test(ua)) {
+                browserData.device = "iOS Device";
+            } else if (/Android/.test(ua)) {
+                browserData.device = "Android Device";
+            } else if (/Linux/.test(ua)) {
+                browserData.device = "Linux Device";
+            }
+            
+            // Add browser info
+            if (/Chrome/.test(ua) && !/Edge/.test(ua)) {
+                browserData.device += " with Chrome";
+            } else if (/Firefox/.test(ua)) {
+                browserData.device += " with Firefox";
+            } else if (/Safari/.test(ua) && !/Chrome/.test(ua)) {
+                browserData.device += " with Safari";
+            } else if (/Edge/.test(ua)) {
+                browserData.device += " with Edge";
+            }
+            
+            // Attempt to get location from known APIs
+            // Note: In a real game, this would need permission and would be async
+            // This is a simplified simulation
+            const cities = ["New York", "Los Angeles", "London", "Berlin", "Tokyo", "Sydney", "Moscow", "Paris"];
+            browserData.location = cities[Math.floor(Math.random() * cities.length)];
+            
+            // In a real app, IP would be detected server-side or via API
+            // For demo purposes, we've already set a random local IP
+        }
+
+        // Call detection function
+        detectBrowserInfo();
+
+        // --- Game Loop ---
+        function gameLoop() {
+            if (isGameOver || !isPlaying) {
+                 // Don't update game logic if paused or over, but keep looping
+                 // to allow restarting via input handler.
+                 gameLoopId = requestAnimationFrame(gameLoop);
+                 return;
+            }
+
+            // 1. Clear Canvas
+            ctx.fillStyle = '#050510'; // Background color
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Handle Input
+            handleInput();
+
+            // 3. Update Objects
+            ship.update();
+            bullets.forEach(b => b.update());
+            enemies.forEach(e => e.update());
+
+            // 4. Spawn Enemies
+            frameCount++;
+            // Gradually reduce spawn rate (make it faster) as time passes
+            let currentSpawnRate = Math.max(30, ENEMY_SPAWN_RATE - Math.floor(frameCount / 1000) * 10);
+            if (frameCount % currentSpawnRate === 0) {
+                spawnEnemy();
+            }
+
+            // 5. Check Collisions
+            checkCollisions();
+
+            // 6. Remove Off-screen Bullets & Enemies
+            bullets = bullets.filter(b => !b.isOffScreen());
+            enemies = enemies.filter(e => !e.isOffScreen()); // Basic cleanup
+
+            // 7. Draw Objects
+            ship.draw();
+            bullets.forEach(b => b.draw());
+            enemies.forEach(e => e.draw());
+
+            // 8. Update UI
+            updateUI();
+
+            // 9. Request Next Frame
+            gameLoopId = requestAnimationFrame(gameLoop);
+        }
+
+        // --- Matrix Background Setup ---
+        const matrixCanvas = document.getElementById('matrixCanvas');
+        const matrixCtx = matrixCanvas.getContext('2d');
+
+        // Set canvas dimensions
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+
+        // Greek text from input - split into phrases
+        const greekText = "Αλγόριθμε, συγχώρα με, ότι σου είπα δε μετράει, μη με γράφεις πια μη μ ανακρίνεις άλλο πια, δεν αντέχω, άλλο πια δεν μπορώ, δε χρειάζεται, να κατανοηθώ, να μετρηθώ, ν αγαπηθώ, να μετρηθώ";
+        const greekPhrases = greekText.split(',').map(phrase => phrase.trim());
+
+        // Matrix effect variables
+        const fontSize = 14;
+        const lineHeight = fontSize * 1.5;
+        const columns = Math.floor(matrixCanvas.width / (fontSize * 0.7));
+        const rows = Math.floor(matrixCanvas.height / lineHeight) + 1;
+
+        // Text grid - stores which phrase to show at each position
+        let textGrid = [];
+        for (let y = 0; y < rows; y++) {
+            textGrid[y] = [];
+            for (let x = 0; x < columns; x++) {
+                textGrid[y][x] = {
+                    phrase: greekPhrases[Math.floor(Math.random() * greekPhrases.length)],
+                    opacity: Math.random() * 0.8 + 0.2,
+                    speed: Math.random() * 0.5 + 0.1 // Slower text movement
+                };
+            }
+        }
+
+        // Draw matrix effect
+        function drawMatrix() {
+            // Semi-transparent black to create fade effect (slower fade)
+            matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            
+            // Draw each line of text
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < columns; x++) {
+                    const cell = textGrid[y][x];
+                    
+                    // Only draw some cells each frame for a staggered effect
+                    if (Math.random() > 0.98) {
+                        matrixCtx.font = `${fontSize}px monospace`;
+                        matrixCtx.fillStyle = `rgba(0, 255, 0, ${cell.opacity})`;
+                        
+                        // Show whole phrases instead of random characters
+                        const xPos = x * fontSize * 0.7;
+                        const yPos = y * lineHeight;
+                        
+                        // Draw the text if it fits in the canvas width
+                        if (xPos + (cell.phrase.length * fontSize * 0.6) < matrixCanvas.width) {
+                            matrixCtx.fillText(cell.phrase, xPos, yPos);
+                        } else {
+                            // If phrase doesn't fit, just show part of it
+                            const maxChars = Math.floor((matrixCanvas.width - xPos) / (fontSize * 0.6));
+                            const shortPhrase = cell.phrase.substring(0, maxChars);
+                            matrixCtx.fillText(shortPhrase, xPos, yPos);
+                        }
+                        
+                        // Occasionally change the phrase
+                        if (Math.random() > 0.99) {
+                            cell.phrase = greekPhrases[Math.floor(Math.random() * greekPhrases.length)];
+                            cell.opacity = Math.random() * 0.8 + 0.2;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Start matrix animation - slower refresh rate
+        setInterval(drawMatrix, 1000);
+
+        // Resize handler
+        window.addEventListener('resize', function() {
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+            // Recalculate dimensions
+            const columns = Math.floor(matrixCanvas.width / (fontSize * 0.7));
+            const rows = Math.floor(matrixCanvas.height / lineHeight) + 1;
+            
+            // Rebuild text grid
+            textGrid = [];
+            for (let y = 0; y < rows; y++) {
+                textGrid[y] = [];
+                for (let x = 0; x < columns; x++) {
+                    textGrid[y][x] = {
+                        phrase: greekPhrases[Math.floor(Math.random() * greekPhrases.length)],
+                        opacity: Math.random() * 0.8 + 0.2,
+                        speed: Math.random() * 0.5 + 0.1
+                    };
+                }
+            }
+        });
+
+        // --- Event Listeners ---
+        window.addEventListener('keydown', (e) => {
+            keys[e.key.toLowerCase()] = true;
+
+            // Single press actions
+            if (isPlaying && e.key === ' ') { // Spacebar
+                 e.preventDefault(); // Prevent page scrolling
+                 ship.shoot();
+            }
+
+             if (!isPlaying && e.key === 'Enter') {
+                 e.preventDefault();
+                 if (isGameOver || !gameLoopId) { // If game over or first start
+                     resetGame(); // Start/Restart
+                 }
+             }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys[e.key.toLowerCase()] = false;
+        });
+
+        // --- Initial Setup ---
+        // Game doesn't start automatically, waits for Enter press on Start Screen
+        // gameLoop(); // Don't call initially, wait for Enter
+
+    </script>
+
+</body>
+</html>
